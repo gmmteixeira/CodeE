@@ -283,9 +283,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e517629a320075241b437da37ee820a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGrounded: 1
-  movementSpeed: 5
+  movementSpeed: 10
   jumpForce: 15
+  friction: 10
   normalize: 0
   bHop: 1
   physMaterial: {fileID: 13400000, guid: 8f01197695588314393124b15c0c905d, type: 2}
@@ -466,7 +466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b65983431dcf83d4e856b3bc1abcb2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sensitivity: 3
+  sensitivity: 2
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

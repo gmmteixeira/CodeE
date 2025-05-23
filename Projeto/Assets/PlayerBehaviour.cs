@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class ThingyScript : MonoBehaviour
+public class PlayerBehaviour : MonoBehaviour
 {
-    public bool isGrounded = false;
+    private bool isGrounded = false;
     public float movementSpeed = 6f;
     public float jumpForce = 15f;
+    public float friction = 10f;
     public bool normalize = false;
     public bool bHop = true;
 
@@ -15,7 +16,6 @@ public class ThingyScript : MonoBehaviour
         if (collision.gameObject.name == "Cube")
         {
             isGrounded = true;
-            movementSpeed = 10f;
         }
     }
 
@@ -24,7 +24,7 @@ public class ThingyScript : MonoBehaviour
         if (collision.gameObject.name == "Cube")
         {
             isGrounded = false;
-            movementSpeed = 3f;
+            if (bHop) physMaterial.dynamicFriction = 0f;
         }
     }
 
@@ -55,20 +55,19 @@ public class ThingyScript : MonoBehaviour
             {
                 input.Normalize();
             }
-            rb.AddForce(yaw * input * movementSpeed);
+            if (isGrounded) rb.AddForce(yaw * input * movementSpeed); else rb.AddForce(yaw * input * movementSpeed/2f);
         }
 
-        if (bHop && isGrounded && physMaterial.dynamicFriction < 7f)
+        if (bHop && isGrounded && physMaterial.dynamicFriction < friction)
         {
-            physMaterial.dynamicFriction += 30f * Time.deltaTime;
-        } 
-        physMaterial.dynamicFriction = Mathf.Clamp(physMaterial.dynamicFriction, 0f, 7f);
+            physMaterial.dynamicFriction += friction * 3 * Time.deltaTime;
+        }
+        physMaterial.dynamicFriction = Mathf.Clamp(physMaterial.dynamicFriction, 0f, friction);
 
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * 200);
-            if (bHop) physMaterial.dynamicFriction = 0f;
         }
-        
+
     }
 }
