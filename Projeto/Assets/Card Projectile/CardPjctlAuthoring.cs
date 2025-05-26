@@ -1,10 +1,13 @@
 using UnityEngine;
 using Unity.Entities;
+using Unity.Mathematics;
 
 public class CardPjctlAuthoring : MonoBehaviour
 {
     public float speed = 10f;
-    public float lifeTime = 5f;
+    //public GameObject arenaObj;
+    //public int radius;
+    
 
     private class Baker : Baker<CardPjctlAuthoring>
     {
@@ -12,8 +15,13 @@ public class CardPjctlAuthoring : MonoBehaviour
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
 
-            AddComponent(entity, new CardPjctlProperties { speed = authoring.speed });
-            //AddComponent(entity, new CardPjctlProperties { lifeTime = authoring.lifeTime });
+            AddComponent(entity, new CardPjctlProperties
+            {
+                speed = authoring.speed,
+                //radius = authoring.radius,
+                //arenaPos = authoring.arenaObj.transform.position,
+
+            });
         }
     }
 }
@@ -21,5 +29,6 @@ public class CardPjctlAuthoring : MonoBehaviour
 public struct CardPjctlProperties : IComponentData
 {
     public float speed;
-    //public float lifeTime;
+    //public float3 arenaPos;
+    //public int radius;
 }

@@ -1,4 +1,6 @@
+using Unity.Entities;
 using UnityEngine;
+using Unity.Collections;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -8,12 +10,13 @@ public class PlayerBehaviour : MonoBehaviour
     public float friction = 10f;
     public bool normalize = false;
     public bool bHop = true;
-
+    public GameObject arenaObj;
     public PhysicsMaterial physMaterial;
+    
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "Cube")
+        if (collision.gameObject == arenaObj)
         {
             isGrounded = true;
         }
@@ -21,7 +24,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.name == "Cube")
+        if (collision.gameObject == arenaObj)
         {
             isGrounded = false;
             if (bHop) physMaterial.dynamicFriction = 0f;
@@ -31,12 +34,13 @@ public class PlayerBehaviour : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        var ecb = new EntityCommandBuffer(Allocator.Persistent);
 
         float camYaw = Camera.main.transform.eulerAngles.y;
         Quaternion yaw = Quaternion.Euler(0, camYaw, 0);
@@ -55,7 +59,7 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 input.Normalize();
             }
-            if (isGrounded) rb.AddForce(yaw * input * movementSpeed); else rb.AddForce(yaw * input * movementSpeed/2f);
+            if (isGrounded) rb.AddForce(yaw * input * movementSpeed); else rb.AddForce(yaw * input * movementSpeed / 2f);
         }
 
         if (bHop && isGrounded && physMaterial.dynamicFriction < friction)
@@ -68,6 +72,5 @@ public class PlayerBehaviour : MonoBehaviour
         {
             rb.AddForce(Vector3.up * 200);
         }
-
     }
 }
