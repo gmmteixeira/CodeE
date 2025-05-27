@@ -1,12 +1,16 @@
 using UnityEngine;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 
 public class ShootingAuthoring : MonoBehaviour
 {
 
     public GameObject prefab;
-    public int inacuracy;
+    public float inacuracy;
+    public int numberOfPorjectiles;
+    public float shotCooldown;
+    public float cooldownTimer;
     
 
     private class Baker : Baker<ShootingAuthoring>
@@ -19,7 +23,9 @@ public class ShootingAuthoring : MonoBehaviour
             {
                 prefab = GetEntity(authoring.prefab, TransformUsageFlags.Dynamic),
                 inacuracy = authoring.inacuracy,
-
+                numberOfPorjectiles = authoring.numberOfPorjectiles,
+                shotCooldown = authoring.shotCooldown,
+                cooldownTimer = authoring.cooldownTimer
             });
         }
     }
@@ -28,5 +34,8 @@ public class ShootingAuthoring : MonoBehaviour
 public struct ShootingProperties : IComponentData
 {
     public Entity prefab;
-    public int inacuracy;
+    public float inacuracy;
+    public int numberOfPorjectiles;
+    public float shotCooldown;
+    public float cooldownTimer;
 }

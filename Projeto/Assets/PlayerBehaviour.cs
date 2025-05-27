@@ -1,10 +1,14 @@
 using Unity.Entities;
 using UnityEngine;
 using Unity.Collections;
+using UnityEngine.InputSystem.LowLevel;
+using System;
 
 public class PlayerBehaviour : MonoBehaviour
 {
     private bool isGrounded = false;
+
+
     public float movementSpeed = 6f;
     public float jumpForce = 15f;
     public float friction = 10f;
@@ -34,7 +38,7 @@ public class PlayerBehaviour : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -72,5 +76,6 @@ public class PlayerBehaviour : MonoBehaviour
         {
             rb.AddForce(Vector3.up * 200);
         }
+
     }
 }

@@ -16,6 +16,6 @@ public class DebugSpeedUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        text.text = player.GetComponent<Rigidbody>().linearVelocity.magnitude.ToString("F2") + " m/s";
+        text.text = (1.0f / Time.deltaTime).ToString();
     }
 }
