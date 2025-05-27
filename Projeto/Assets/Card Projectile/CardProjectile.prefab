@@ -121,6 +121,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32f5b0cb319e8fa428b1df863c7dbe69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  arenaObj: {fileID: 0}
-  radius: 100
+  speed: 30

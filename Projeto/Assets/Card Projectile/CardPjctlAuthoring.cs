@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 public class CardPjctlAuthoring : MonoBehaviour
 {
-    public float speed = 10f;
+    public float speed = 0f;
     //public GameObject arenaObj;
     //public int radius;
     
