@@ -5,6 +5,7 @@ public class PlayerBehaviour : MonoBehaviour
 {
     public float speed;
     InputAction movement;
+    private Vector3 force;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -15,10 +16,14 @@ public class PlayerBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Rigidbody rb = GetComponent<Rigidbody>();
         float camYaw = Camera.main.transform.eulerAngles.y;
         Quaternion yaw = Quaternion.Euler(0, camYaw, 0);
         Vector2 moveValue = movement.ReadValue<Vector2>();
-        rb.AddForce(yaw * new Vector3(moveValue.x, 0f, moveValue.y)* speed);
+        force = yaw * new Vector3(moveValue.x, 0f, moveValue.y) * speed;
+
+    }
+    void FixedUpdate()
+    {
+        GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
     }
 }
