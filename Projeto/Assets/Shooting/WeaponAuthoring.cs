@@ -2,25 +2,25 @@ using Unity.Entities;
 using UnityEngine;
 using Unity.Mathematics;
 
-public class ProjectileAuthoring : MonoBehaviour
+public class WeaponAuthoring : MonoBehaviour
 {
-    public float speed;
+    public GameObject projectile;
 
-    private class Baker : Baker<ProjectileAuthoring>
+    private class Baker : Baker<WeaponAuthoring>
     {
-        public override void Bake(ProjectileAuthoring authoring)
+        public override void Bake(WeaponAuthoring authoring)
         {
-            AddComponent(GetEntity(TransformUsageFlags.Dynamic), new ProjectileProperties
+            AddComponent(GetEntity(TransformUsageFlags.Dynamic), new WeaponProperties
             {
-                speed = authoring.speed
+                projectile = GetEntity(authoring.projectile, TransformUsageFlags.Dynamic)
             });
         }
     }
 }
 
-public struct ProjectileProperties : IComponentData
+public struct WeaponProperties : IComponentData
 {
-    public float speed;
+    public Entity projectile;
     
 }
 

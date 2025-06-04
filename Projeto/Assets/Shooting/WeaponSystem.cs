@@ -10,15 +10,15 @@ public partial struct ShootingSystem : ISystem
 
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<ShootingProperties>();
+        state.RequireForUpdate<WeaponProperties>();
     }
 
     public void OnUpdate(ref SystemState state)
     {
 
         float deltaTime = SystemAPI.Time.DeltaTime;
-        foreach ((RefRW<LocalTransform> localTransform, RefRO<ShootingProperties> shootingProperties, Entity entity)
-        in SystemAPI.Query<RefRW<LocalTransform>, RefRO<ShootingProperties>>().WithEntityAccess())
+        foreach ((RefRW<LocalTransform> localTransform, RefRO<WeaponProperties> shootingProperties, Entity entity)
+        in SystemAPI.Query<RefRW<LocalTransform>, RefRO<WeaponProperties>>().WithEntityAccess())
         {
             var entityManager = state.EntityManager;
             InputAction shoot = InputSystem.actions.FindAction("Attack");

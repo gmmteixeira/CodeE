@@ -24,7 +24,7 @@ public partial struct EnemySystem : ISystem
             float3 lTP = localTransform.ValueRO.Position;
             localTransform.ValueRW.Rotation = Quaternion.Slerp(
                 localTransform.ValueRO.Rotation,
-                Quaternion.LookRotation((GameVariables.staticVariables.player.transform.position - new Vector3(lTP.x, lTP.y, lTP.z)).normalized),
+                Quaternion.LookRotation((Game.staticVariables.player.transform.position - new Vector3(lTP.x, lTP.y, lTP.z)).normalized),
                 Time.deltaTime * enemyProperties.ValueRO.turningSpeed);
 
             if (localTransform.ValueRO.Position.y < 1.5) localTransform.ValueRW.Position.y = 1.5f;
