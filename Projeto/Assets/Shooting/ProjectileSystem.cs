@@ -52,6 +52,7 @@ public partial struct ProjectileSystem : ISystem
                 QueryInteraction.Default))
             {
                 ecb.DestroyEntity(hit.Entity);
+                ecb.DestroyEntity(entity);
             }
 
         }

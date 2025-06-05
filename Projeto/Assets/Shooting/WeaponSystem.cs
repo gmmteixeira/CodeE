@@ -5,6 +5,8 @@ using UnityEngine.InputSystem;
 using Unity.Mathematics;
 using UnityEditor.Search;
 
+[UpdateInGroup(typeof(SimulationSystemGroup))]
+[UpdateBefore(typeof(TransformSystemGroup))]
 public partial struct ShootingSystem : ISystem
 {
 
@@ -17,19 +19,24 @@ public partial struct ShootingSystem : ISystem
     {
 
         float deltaTime = SystemAPI.Time.DeltaTime;
-        foreach ((RefRW<LocalTransform> localTransform, RefRO<WeaponProperties> shootingProperties, Entity entity)
-        in SystemAPI.Query<RefRW<LocalTransform>, RefRO<WeaponProperties>>().WithEntityAccess())
+        foreach ((RefRW<WeaponProperties> shootingProperties, Entity entity)
+        in SystemAPI.Query<RefRW<WeaponProperties>>().WithEntityAccess())
         {
             var entityManager = state.EntityManager;
+
+            shootingProperties.ValueRW.cooldownTimer -= 1 * deltaTime;
+
             InputAction shoot = InputSystem.actions.FindAction("Attack");
-            if (shoot.ReadValue<float>() != 0)
+            if (shoot.ReadValue<float>() != 0 && shootingProperties.ValueRO.cooldownTimer <= 0)
             {
+                shootingProperties.ValueRW.cooldownTimer = shootingProperties.ValueRO.cooldownAmount;
+
                 Entity spawnedEntity = entityManager.Instantiate(shootingProperties.ValueRO.projectile);
                 entityManager.SetComponentData(spawnedEntity, new LocalTransform
                 {
-                    Scale = 1,
                     Position = new float3(Camera.main.transform.position.x, Camera.main.transform.position.y - 0.75f, Camera.main.transform.position.z),
-                    Rotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up())
+                    Rotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up()),
+                    Scale = 1,
                 });
             }
         }

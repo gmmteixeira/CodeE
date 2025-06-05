@@ -1,10 +1,12 @@
 using Unity.Entities;
+using Unity.VisualScripting;
 using UnityEngine;
-using Unity.Mathematics;
 
 public class WeaponAuthoring : MonoBehaviour
 {
     public GameObject projectile;
+    public float cooldownAmount;
+    private float cooldownTimer;
 
     private class Baker : Baker<WeaponAuthoring>
     {
@@ -12,7 +14,9 @@ public class WeaponAuthoring : MonoBehaviour
         {
             AddComponent(GetEntity(TransformUsageFlags.Dynamic), new WeaponProperties
             {
-                projectile = GetEntity(authoring.projectile, TransformUsageFlags.Dynamic)
+                projectile = GetEntity(authoring.projectile, TransformUsageFlags.Dynamic),
+                cooldownAmount = authoring.cooldownAmount,
+                cooldownTimer = authoring.cooldownTimer
             });
         }
     }
@@ -21,6 +25,8 @@ public class WeaponAuthoring : MonoBehaviour
 public struct WeaponProperties : IComponentData
 {
     public Entity projectile;
+    public float cooldownAmount;
+    public float cooldownTimer;
     
 }
 
