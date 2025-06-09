@@ -44,7 +44,7 @@ public partial struct ProjectileSystem : ISystem
             if (physicsWorld.CollisionWorld.CapsuleCast(
                 start,
                 end,
-                0.5f,
+                0.2f,
                 direction,
                 distance,
                 out ColliderCastHit hit,

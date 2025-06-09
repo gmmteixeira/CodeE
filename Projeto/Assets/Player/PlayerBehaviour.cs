@@ -23,12 +23,9 @@ public class PlayerBehaviour : MonoBehaviour
 
         float camYaw = Camera.main.transform.eulerAngles.y;
         yaw = Quaternion.Euler(0, camYaw, 0);
-
         
-
         movement = InputSystem.actions.FindAction("move");
         move = movement.ReadValue<Vector2>();
-        Debug.Log(move);
     }
 
     void FixedUpdate()

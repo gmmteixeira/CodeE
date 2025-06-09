@@ -34,7 +34,7 @@ public partial struct ShootingSystem : ISystem
                 Entity spawnedEntity = entityManager.Instantiate(shootingProperties.ValueRO.projectile);
                 entityManager.SetComponentData(spawnedEntity, new LocalTransform
                 {
-                    Position = new float3(Camera.main.transform.position.x, Camera.main.transform.position.y - 0.75f, Camera.main.transform.position.z),
+                    Position = new float3(Camera.main.transform.position.x, Camera.main.transform.position.y - 0.6f, Camera.main.transform.position.z),
                     Rotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up()),
                     Scale = 1,
                 });
