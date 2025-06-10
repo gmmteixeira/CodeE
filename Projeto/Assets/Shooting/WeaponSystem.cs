@@ -3,7 +3,6 @@ using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine.InputSystem;
 using Unity.Mathematics;
-using UnityEditor.Search;
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateBefore(typeof(TransformSystemGroup))]
@@ -17,13 +16,13 @@ public partial struct ShootingSystem : ISystem
 
     public void OnUpdate(ref SystemState state)
     {
-
+        var entityManager = state.EntityManager;
         float deltaTime = SystemAPI.Time.DeltaTime;
+        
         foreach ((RefRW<WeaponProperties> shootingProperties, Entity entity)
         in SystemAPI.Query<RefRW<WeaponProperties>>().WithEntityAccess())
         {
-            var entityManager = state.EntityManager;
-
+            
             shootingProperties.ValueRW.cooldownTimer -= 1 * deltaTime;
 
             InputAction shoot = InputSystem.actions.FindAction("Attack");

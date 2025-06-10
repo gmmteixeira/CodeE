@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PFCam : MonoBehaviour
+public class FPSCam : MonoBehaviour
 {
     public float sensitivity = 3f;
     private float xRotation = 0f;

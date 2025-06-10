@@ -29,4 +29,3 @@ public struct WeaponProperties : IComponentData
     public float cooldownTimer;
     
 }
-

@@ -3,9 +3,9 @@ using Unity.Entities;
 using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Physics;
-using Unity.Physics.Systems;
 using Unity.Collections;
 
+[BurstCompile]
 public partial struct ProjectileSystem : ISystem
 {
 
@@ -19,6 +19,7 @@ public partial struct ProjectileSystem : ISystem
     {
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         float deltaTime = SystemAPI.Time.DeltaTime;
+        var entityManager = state.EntityManager;
 
         var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
@@ -27,8 +28,11 @@ public partial struct ProjectileSystem : ISystem
         {
 
             float3 start = localTransform.ValueRO.Position;
+
             localTransform.ValueRW.Position += math.forward(localTransform.ValueRO.Rotation) * deltaTime * projectileProperties.ValueRO.speed;
-            if (localTransform.ValueRO.Position.y < 1) ecb.DestroyEntity(entity);
+
+            if (localTransform.ValueRO.Position.y < 0.25 || math.distance(localTransform.ValueRO.Position, new float3(0, 0, 0)) > 120) ecb.DestroyEntity(entity);
+
             float3 end = localTransform.ValueRO.Position;
 
             float3 direction = math.normalize(end - start);
@@ -51,7 +55,9 @@ public partial struct ProjectileSystem : ISystem
                 filter,
                 QueryInteraction.Default))
             {
-                ecb.DestroyEntity(hit.Entity);
+                var enemyProperties = entityManager.GetComponentData<EnemyProperties>(hit.Entity);
+                enemyProperties.health -= 1;
+                entityManager.SetComponentData(hit.Entity, enemyProperties);
                 ecb.DestroyEntity(entity);
             }
 
