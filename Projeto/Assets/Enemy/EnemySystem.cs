@@ -12,6 +12,7 @@ public partial struct EnemySystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<EnemyProperties>();
+        
     }
 
     public void OnUpdate(ref SystemState state)
@@ -19,6 +20,7 @@ public partial struct EnemySystem : ISystem
         float deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
+        var entityManager = state.EntityManager;
 
         foreach ((RefRW<LocalTransform> localTransform, RefRO<EnemyProperties> enemyProperties, Entity entity)
         in SystemAPI.Query<RefRW<LocalTransform>, RefRO<EnemyProperties>>().WithEntityAccess())
@@ -36,8 +38,8 @@ public partial struct EnemySystem : ISystem
 
             var filter = new CollisionFilter
             {
-                BelongsTo = ~0u,
-                CollidesWith = ~0u,
+                BelongsTo = 1 << 6,
+                CollidesWith = 1 << 6,
                 GroupIndex = 0
             };
 
@@ -51,10 +53,10 @@ public partial struct EnemySystem : ISystem
                 QueryInteraction.Default
             ))
             {
-                localTransform.ValueRW.Rotation = Quaternion.Slerp(
+                if (entityManager.HasComponent<EnemyProperties>(hit.Entity)) localTransform.ValueRW.Rotation = Quaternion.Slerp(
                     localTransform.ValueRO.Rotation,
                     Quaternion.LookRotation((new Vector3(lTP.x, lTP.y, lTP.z) - new Vector3(hit.Position.x, hit.Position.y, hit.Position.z)).normalized),
-                    deltaTime * 5 / (math.distance(localTransform.ValueRO.Position, hit.Position) * 2));
+                    deltaTime * 3 / (math.distance(localTransform.ValueRO.Position, hit.Position) * 2));
             }
 
 

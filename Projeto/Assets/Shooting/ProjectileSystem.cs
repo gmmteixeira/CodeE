@@ -31,7 +31,7 @@ public partial struct ProjectileSystem : ISystem
 
             localTransform.ValueRW.Position += math.forward(localTransform.ValueRO.Rotation) * deltaTime * projectileProperties.ValueRO.speed;
 
-            if (localTransform.ValueRO.Position.y < 0.25 || math.distance(localTransform.ValueRO.Position, new float3(0, 0, 0)) > 120) ecb.DestroyEntity(entity);
+            if (math.distance(localTransform.ValueRO.Position, new float3(0, 0, 0)) > 120) ecb.DestroyEntity(entity);
 
             float3 end = localTransform.ValueRO.Position;
 
@@ -48,16 +48,19 @@ public partial struct ProjectileSystem : ISystem
             if (physicsWorld.CollisionWorld.CapsuleCast(
                 start,
                 end,
-                0.5f,
+                0.15f,
                 direction,
                 distance,
                 out ColliderCastHit hit,
                 filter,
                 QueryInteraction.Default))
             {
-                var enemyProperties = entityManager.GetComponentData<EnemyProperties>(hit.Entity);
-                enemyProperties.health -= 1;
-                entityManager.SetComponentData(hit.Entity, enemyProperties);
+                if (entityManager.HasComponent<EnemyProperties>(hit.Entity))
+                {
+                    var enemyProperties = entityManager.GetComponentData<EnemyProperties>(hit.Entity);
+                    enemyProperties.health -= 1;
+                    entityManager.SetComponentData(hit.Entity, enemyProperties);
+                }
                 ecb.DestroyEntity(entity);
             }
 
