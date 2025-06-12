@@ -4,6 +4,7 @@ using Unity.Transforms;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Collections;
+using UnityEngine;
 
 [BurstCompile]
 public partial struct ProjectileSystem : ISystem
@@ -60,6 +61,13 @@ public partial struct ProjectileSystem : ISystem
                     var enemyProperties = entityManager.GetComponentData<EnemyProperties>(hit.Entity);
                     enemyProperties.health -= 1;
                     entityManager.SetComponentData(hit.Entity, enemyProperties);
+                    var e = ecb.CreateEntity();
+                    ecb.AddComponent(e, new SoundEmitterRequest
+                    {
+                        soundName = "EnemyHit",
+                        followEntity = hit.Entity
+                    });
+                    
                 }
                 ecb.DestroyEntity(entity);
             }

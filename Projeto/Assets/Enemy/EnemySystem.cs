@@ -25,7 +25,17 @@ public partial struct EnemySystem : ISystem
         foreach ((RefRW<LocalTransform> localTransform, RefRO<EnemyProperties> enemyProperties, Entity entity)
         in SystemAPI.Query<RefRW<LocalTransform>, RefRO<EnemyProperties>>().WithEntityAccess())
         {
-            if (enemyProperties.ValueRO.health <= 0) ecb.DestroyEntity(entity);
+            if (enemyProperties.ValueRO.health <= 0)
+            {
+                ecb.DestroyEntity(entity);
+                
+                // var e = ecb.CreateEntity();
+                // ecb.AddComponent(e, new SoundEmitterRequest
+                // {
+                //     soundName = "bruh",
+                //     followEntity = entity
+                // });
+            }
             localTransform.ValueRW.Position += math.forward(localTransform.ValueRO.Rotation) * deltaTime * enemyProperties.ValueRO.forwardSpeed;
 
             float3 lTP = localTransform.ValueRO.Position;

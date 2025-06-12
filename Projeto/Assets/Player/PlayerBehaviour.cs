@@ -28,7 +28,6 @@ public class PlayerBehaviour : MonoBehaviour
 
         movement = InputSystem.actions.FindAction("move");
         move = movement.ReadValue<Vector2>();
-        Debug.Log(move);
     }
 
     void FixedUpdate()
