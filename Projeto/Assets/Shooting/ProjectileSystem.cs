@@ -1,80 +1,26 @@
-using Unity.Burst;
 using Unity.Entities;
-using Unity.Transforms;
-using Unity.Mathematics;
-using Unity.Physics;
 using Unity.Collections;
+using Unity.Transforms;
 using UnityEngine;
+using Unity.Mathematics;
 
-[BurstCompile]
-public partial struct ProjectileSystem : ISystem
+
+public partial class ProjectyleSystem : SystemBase
 {
-
-    public void OnCreate(ref SystemState state)
+    protected override void OnUpdate()
     {
-        state.RequireForUpdate<ProjectileProperties>();
-        state.RequireForUpdate<PhysicsWorldSingleton>();
-    }
-
-    public void OnUpdate(ref SystemState state)
-    {
-        var ecb = new EntityCommandBuffer(Allocator.Temp);
         float deltaTime = SystemAPI.Time.DeltaTime;
-        var entityManager = state.EntityManager;
-
-        var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
-
-        foreach ((RefRW<LocalTransform> localTransform, RefRO<ProjectileProperties> projectileProperties, Entity entity)
-        in SystemAPI.Query<RefRW<LocalTransform>, RefRO<ProjectileProperties>>().WithEntityAccess())
+        var ecb = new EntityCommandBuffer(Allocator.TempJob);
+        var ecbParallel = ecb.AsParallelWriter();
+        
+        Entities.ForEach((Entity entity, int entityInQueryIndex, ref LocalTransform localTransform, in ProjectileProperties projectileProperties) =>
         {
+            localTransform.Position += deltaTime * projectileProperties.speed * math.forward(localTransform.Rotation);
+            if (math.distance(localTransform.Position, new float3(0,0,0)) > 200) {ecbParallel.DestroyEntity(entityInQueryIndex, entity);}
 
-            float3 start = localTransform.ValueRO.Position;
-
-            localTransform.ValueRW.Position += math.forward(localTransform.ValueRO.Rotation) * deltaTime * projectileProperties.ValueRO.speed;
-
-            if (math.distance(localTransform.ValueRO.Position, new float3(0, 0, 0)) > 120) ecb.DestroyEntity(entity);
-
-            float3 end = localTransform.ValueRO.Position;
-
-            float3 direction = math.normalize(end - start);
-            float distance = math.distance(start, end);
-
-            var filter = new CollisionFilter
-            {
-                BelongsTo = ~0u,
-                CollidesWith = ~0u,
-                GroupIndex = 0
-            };
-
-            if (physicsWorld.CollisionWorld.CapsuleCast(
-                start,
-                end,
-                0.15f,
-                direction,
-                distance,
-                out ColliderCastHit hit,
-                filter,
-                QueryInteraction.Default))
-            {
-                if (entityManager.HasComponent<EnemyProperties>(hit.Entity))
-                {
-                    var enemyProperties = entityManager.GetComponentData<EnemyProperties>(hit.Entity);
-                    enemyProperties.health -= 1;
-                    entityManager.SetComponentData(hit.Entity, enemyProperties);
-                    var e = ecb.CreateEntity();
-                    ecb.AddComponent(e, new SoundEmitterRequest
-                    {
-                        soundName = "EnemyHit",
-                        followEntity = hit.Entity
-                    });
-                    
-                }
-                ecb.DestroyEntity(entity);
-            }
-
-        }
-        ecb.Playback(state.EntityManager);
+        }).ScheduleParallel();
+        Dependency.Complete();
+        ecb.Playback(EntityManager);
         ecb.Dispose();
-
     }
 }

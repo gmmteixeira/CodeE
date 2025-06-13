@@ -7,27 +7,29 @@ public class EnemyAuthoring : MonoBehaviour
     public float forwardSpeed;
     public float turningSpeed;
     public int health;
-    private Vector3 playerPos;
 
     private class Baker : Baker<EnemyAuthoring>
     {
         public override void Bake(EnemyAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent(entity, new EnemyProperties
+            AddComponent(entity, new HomingBoidProperties
             {
                 forwardSpeed = authoring.forwardSpeed,
                 turningSpeed = authoring.turningSpeed,
+            });
+            AddComponent(entity, new DamageProperties
+            {
                 health = authoring.health
             });
         }
     }
 }
 
-public struct EnemyProperties : IComponentData
+public struct HomingBoidProperties : IComponentData
 {
     public float forwardSpeed;
     public float turningSpeed;
-    public int health;
-    public Vector3 playerPos;
 }
+
+public struct DamageProperties : IComponentData {public int health; }
