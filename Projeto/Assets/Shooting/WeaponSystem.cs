@@ -3,43 +3,61 @@ using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine.InputSystem;
 using Unity.Mathematics;
+using Unity.Physics;
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateBefore(typeof(TransformSystemGroup))]
-public partial struct ShootingSystem : ISystem
+public partial class ShootingSystem : SystemBase
 {
+    private EntityCommandBufferSystem _ecbSystem;
 
-    public void OnCreate(ref SystemState state)
+    protected override void OnCreate()
     {
-        state.RequireForUpdate<WeaponProperties>();
+        base.OnCreate();
+        _ecbSystem = World.GetOrCreateSystemManaged<BeginSimulationEntityCommandBufferSystem>();
+
+        RequireForUpdate<WeaponProperties>();
     }
 
-    public void OnUpdate(ref SystemState state)
+    protected override void OnUpdate()
     {
-        var entityManager = state.EntityManager;
+        var ecb = _ecbSystem.CreateCommandBuffer();
         float deltaTime = SystemAPI.Time.DeltaTime;
-        
-        foreach ((RefRW<WeaponProperties> shootingProperties, Entity entity)
-        in SystemAPI.Query<RefRW<WeaponProperties>>().WithEntityAccess())
-        {
-            
-            shootingProperties.ValueRW.cooldownTimer -= 1 * deltaTime;
 
-            InputAction shoot = InputSystem.actions.FindAction("Attack");
-            if (shoot.ReadValue<float>() != 0 && shootingProperties.ValueRO.cooldownTimer <= 0)
+        InputAction shootAction = InputSystem.actions.FindAction("Attack");
+        float shootInput = shootAction?.ReadValue<float>() ?? 0f;
+
+        float3 spawnPosition = new float3(
+            Camera.main.transform.position.x,
+            Camera.main.transform.position.y - 0.75f,
+            Camera.main.transform.position.z
+        );
+        quaternion spawnRotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up());
+
+        Entities
+            .ForEach((Entity entity, ref WeaponProperties weaponProps) =>
             {
-                shootingProperties.ValueRW.cooldownTimer = shootingProperties.ValueRO.cooldownAmount;
+                weaponProps.cooldownTimer -= deltaTime;
 
-                Entity spawnedEntity = entityManager.Instantiate(shootingProperties.ValueRO.projectile);
-                entityManager.SetComponentData(spawnedEntity, new LocalTransform
+                if (shootInput != 0 && weaponProps.cooldownTimer <= 0f)
                 {
-                    Position = new float3(Camera.main.transform.position.x, Camera.main.transform.position.y - 0.75f, Camera.main.transform.position.z),
-                    Rotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up()),
-                    Scale = 1,
-                });
-            }
-        }
+                    weaponProps.cooldownTimer = weaponProps.cooldownAmount;
 
+                    Entity spawned = ecb.Instantiate(weaponProps.projectile);
+                    ecb.SetComponent(spawned, new LocalTransform
+                    {
+                        Position = spawnPosition,
+                        Rotation = spawnRotation,
+                        Scale = 1
+                    });
+                    ecb.SetComponent(spawned, new PhysicsVelocity
+                    {
+                        Linear = math.forward(spawnRotation) * weaponProps.speed,
+                        Angular = float3.zero
+                    });
+                }
+            }).Schedule();
 
+        _ecbSystem.AddJobHandleForProducer(Dependency);
     }
 }

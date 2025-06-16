@@ -25,9 +25,6 @@ public class Sound
     public float pitch = 1f;
 
     [Range(0f, 1f)]
-    public float pitchRandomness = 0f;
-
-    [Range(0f, 1f)]
     public float spatial = 1f;
     public bool loop;
 }

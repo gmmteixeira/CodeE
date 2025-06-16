@@ -7,6 +7,7 @@ public class WeaponAuthoring : MonoBehaviour
     public GameObject projectile;
     public float cooldownAmount;
     private float cooldownTimer;
+    public float speed;
 
     private class Baker : Baker<WeaponAuthoring>
     {
@@ -16,7 +17,8 @@ public class WeaponAuthoring : MonoBehaviour
             {
                 projectile = GetEntity(authoring.projectile, TransformUsageFlags.Dynamic),
                 cooldownAmount = authoring.cooldownAmount,
-                cooldownTimer = authoring.cooldownTimer
+                cooldownTimer = authoring.cooldownTimer,
+                speed = authoring.speed
             });
         }
     }
@@ -27,5 +29,6 @@ public struct WeaponProperties : IComponentData
     public Entity projectile;
     public float cooldownAmount;
     public float cooldownTimer;
+    public float speed;
     
 }

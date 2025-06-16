@@ -41,6 +41,11 @@ public class PlayerBehaviour : MonoBehaviour
         {
             vector3 = transform.position
         });
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     void FixedUpdate()
