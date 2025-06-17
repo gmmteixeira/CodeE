@@ -14,6 +14,7 @@ public partial class EnemySystem : SystemBase
         var ecbParallel = ecb.AsParallelWriter();
         Vector3 playerPosition = SystemAPI.GetSingleton<PlayerPosition>().vector3;
         int score = SystemAPI.GetSingleton<GuiProperties>().score;
+
         Entities
         .WithAll<PhysicsVelocity>()
         .ForEach((ref PhysicsMass mass, ref PhysicsVelocity velocity, ref LocalTransform localTransform, in HomingBoidProperties homingBoidProperties) =>
@@ -32,21 +33,23 @@ public partial class EnemySystem : SystemBase
 
         }).ScheduleParallel();
 
+
         Entities.WithoutBurst().ForEach((Entity entity, int entityInQueryIndex, AudioSource audioSource, in HealthProperties damageProperties) =>
         {
             if (damageProperties.health <= 0)
             {
-                // Entity deathEntity = ecbParallel.Instantiate(entityInQueryIndex, damageProperties.deathEffect);
-                // ecbParallel.SetComponent(entityInQueryIndex, deathEntity, new LocalTransform
-                // {
-                //     Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
-                // });
+                Entity deathEntity = ecbParallel.Instantiate(entityInQueryIndex, damageProperties.deathEffect);
+                ecbParallel.SetComponent(entityInQueryIndex, deathEntity, new LocalTransform
+                {
+                    Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
+                });
                 ecbParallel.DestroyEntity(entityInQueryIndex, entity);
                 score += 1;
                 Debug.Log($"Enemy destroyed. Score: {score}");
             }
 
         }).Run();
+        SystemAPI.SetSingleton(new GuiProperties { score = score });
 
         Dependency.Complete();
         ecb.Playback(EntityManager);

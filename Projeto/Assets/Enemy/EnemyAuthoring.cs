@@ -8,6 +8,7 @@ public class EnemyAuthoring : MonoBehaviour
     public float turningSpeed;
     public int health;
     public GameObject deathEffect;
+    public GameObject hitEffect;
 
     private class Baker : Baker<EnemyAuthoring>
     {
@@ -22,7 +23,8 @@ public class EnemyAuthoring : MonoBehaviour
             AddComponent(entity, new HealthProperties
             {
                 health = authoring.health,
-                deathEffect = GetEntity(authoring.deathEffect, TransformUsageFlags.Dynamic)
+                deathEffect = GetEntity(authoring.deathEffect, TransformUsageFlags.Dynamic),
+                hitEffect = GetEntity(authoring.hitEffect, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -34,4 +36,4 @@ public struct HomingBoidProperties : IComponentData
     public float turningSpeed;
 }
 
-public struct HealthProperties : IComponentData {public int health; public Entity deathEffect;}
+public struct HealthProperties : IComponentData {public int health; public Entity deathEffect; public Entity hitEffect; }

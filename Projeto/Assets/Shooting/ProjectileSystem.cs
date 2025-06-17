@@ -6,6 +6,7 @@ using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Transforms;
 using Unity.Mathematics;
+using UnityEngine;
 
 public partial class ProjectileSystem : SystemBase
 {
@@ -43,34 +44,49 @@ public partial struct ProjectileTriggerSystem : ISystem
 
         state.Dependency.Complete();
 
+        var entityManager = state.EntityManager;
+
+        var processedProjectiles = new NativeHashSet<Entity>(16, Allocator.Temp);
+
         foreach (var triggerEvent in sim.TriggerEvents)
         {
             var entityA = triggerEvent.EntityA;
             var entityB = triggerEvent.EntityB;
 
-            bool aIsProjectile = state.EntityManager.HasComponent<ProjectileDamageProperties>(entityA);
-            bool bIsProjectile = state.EntityManager.HasComponent<ProjectileDamageProperties>(entityB);
-            bool aHasHealth = state.EntityManager.HasComponent<HealthProperties>(entityA);
-            bool bHasHealth = state.EntityManager.HasComponent<HealthProperties>(entityB);
+            bool aIsProjectile = entityManager.HasComponent<ProjectileDamageProperties>(entityA);
+            bool bIsProjectile = entityManager.HasComponent<ProjectileDamageProperties>(entityB);
+            bool aHasHealth = entityManager.HasComponent<HealthProperties>(entityA);
+            bool bHasHealth = entityManager.HasComponent<HealthProperties>(entityB);
 
-            // Projectile hits health entity
+            // Helper function to process projectile hit
+            void ProcessProjectileHit(Entity projectile, Entity target)
+            {
+                if (!processedProjectiles.Add(projectile))
+                    return;
+
+                var damage = entityManager.GetComponentData<ProjectileDamageProperties>(projectile).damage;
+                var health = entityManager.GetComponentData<HealthProperties>(target);
+                health.health -= (int)damage;
+                ecb.SetComponent(target, health);
+                ecb.DestroyEntity(projectile);
+                Entity hit = ecb.Instantiate(health.hitEffect);
+                ecb.AddComponent(hit, new Parent
+                {
+                    Value = target
+                });
+            }
+
             if (aIsProjectile && bHasHealth)
             {
-                var damage = state.EntityManager.GetComponentData<ProjectileDamageProperties>(entityA).damage;
-                var health = state.EntityManager.GetComponentData<HealthProperties>(entityB);
-                health.health -= (int)damage;
-                ecb.SetComponent(entityB, health);
-                ecb.DestroyEntity(entityA);
+                ProcessProjectileHit(entityA, entityB);
             }
             else if (bIsProjectile && aHasHealth)
             {
-                var damage = state.EntityManager.GetComponentData<ProjectileDamageProperties>(entityB).damage;
-                var health = state.EntityManager.GetComponentData<HealthProperties>(entityA);
-                health.health -= (int)damage;
-                ecb.SetComponent(entityA, health);
-                ecb.DestroyEntity(entityB);
+                ProcessProjectileHit(entityB, entityA);
             }
         }
+
+        processedProjectiles.Dispose();
 
         ecb.Playback(state.EntityManager);
         ecb.Dispose();

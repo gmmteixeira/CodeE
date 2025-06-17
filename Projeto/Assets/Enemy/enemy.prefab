@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 6753812053452418437}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071067}
-  m_LocalPosition: {x: 1.22, y: 3.8, z: 17.8}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -102,10 +102,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b7a74faa1c45d42972f4236db2ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardSpeed: 4
-  turningSpeed: 3
-  health: 3
+  forwardSpeed: 9
+  turningSpeed: 2
+  health: 5
   deathEffect: {fileID: 2481864664759427857, guid: b9cfd31e9fdf5af4e8c7a3e8fbd1c53f, type: 3}
+  hitEffect: {fileID: 2481864664759427857, guid: cebb958f6b5b2e64c9a60730528bbf3f, type: 3}
 --- !u!54 &1287667442512910765
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -166,11 +167,11 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 46d0981e44c3f1047aea16ce359ed238, type: 3}
   m_Resource: {fileID: 8300000, guid: 46d0981e44c3f1047aea16ce359ed238, type: 3}
-  m_PlayOnAwake: 0
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
-  Mute: 1
+  Loop: 1
+  Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128

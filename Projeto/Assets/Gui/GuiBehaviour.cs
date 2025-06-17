@@ -20,7 +20,11 @@ public class GuiBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-    
+        if (_entityManager != null && _entityManager.HasComponent<GuiProperties>(_entityManager.CreateEntityQuery(typeof(GuiProperties)).GetSingletonEntity()))
+        {
+            var guiProperties = _entityManager.GetComponentData<GuiProperties>(_entityManager.CreateEntityQuery(typeof(GuiProperties)).GetSingletonEntity());
+            score.text = guiProperties.score.ToString();
+        }
     }
 
 }
