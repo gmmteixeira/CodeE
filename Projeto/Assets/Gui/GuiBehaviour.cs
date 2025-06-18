@@ -10,8 +10,8 @@ public class GuiBehaviour : MonoBehaviour
     void Start()
     {
         _entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        EntityArchetype archetype = _entityManager.CreateArchetype(typeof(GuiProperties));
-        _entityManager.AddComponentData(_entityManager.CreateEntity(archetype), new GuiProperties
+        EntityArchetype archetype = _entityManager.CreateArchetype(typeof(GameData));
+        _entityManager.AddComponentData(_entityManager.CreateEntity(archetype), new GameData
         {
             score = 0
         });
@@ -20,10 +20,10 @@ public class GuiBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_entityManager != null && _entityManager.HasComponent<GuiProperties>(_entityManager.CreateEntityQuery(typeof(GuiProperties)).GetSingletonEntity()))
+        if (_entityManager != null && _entityManager.HasComponent<GameData>(_entityManager.CreateEntityQuery(typeof(GameData)).GetSingletonEntity()))
         {
-            var guiProperties = _entityManager.GetComponentData<GuiProperties>(_entityManager.CreateEntityQuery(typeof(GuiProperties)).GetSingletonEntity());
-            score.text = guiProperties.score.ToString();
+            var GameData = _entityManager.GetComponentData<GameData>(_entityManager.CreateEntityQuery(typeof(GameData)).GetSingletonEntity());
+            score.text = GameData.score.ToString();
         }
     }
 

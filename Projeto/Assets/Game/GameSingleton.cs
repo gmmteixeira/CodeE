@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-public struct GuiProperties : IComponentData
+public struct GameData : IComponentData
 {
     public int score;
 }
