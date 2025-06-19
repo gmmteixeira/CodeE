@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forwardSpeed: 9
   turningSpeed: 2
-  health: 5
+  health: 3
   deathEffect: {fileID: 2481864664759427857, guid: b9cfd31e9fdf5af4e8c7a3e8fbd1c53f, type: 3}
   hitEffect: {fileID: 2481864664759427857, guid: cebb958f6b5b2e64c9a60730528bbf3f, type: 3}
 --- !u!54 &1287667442512910765
@@ -177,7 +177,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 200
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

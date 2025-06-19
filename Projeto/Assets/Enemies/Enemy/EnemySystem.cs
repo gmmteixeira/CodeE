@@ -13,7 +13,11 @@ public partial class EnemySystem : SystemBase
         var ecb = new EntityCommandBuffer(Allocator.TempJob);
         var ecbParallel = ecb.AsParallelWriter();
         Vector3 playerPosition = SystemAPI.GetSingleton<PlayerPosition>().vector3;
-        int score = SystemAPI.GetSingleton<GameData>().score;
+        int score = 0;
+        if (SystemAPI.HasSingleton<GameData>())
+        {
+            score = SystemAPI.GetSingleton<GameData>().score;
+        }
 
         Entities
         .WithAll<PhysicsVelocity>()
@@ -24,12 +28,10 @@ public partial class EnemySystem : SystemBase
             velocity.Linear = forward * homingBoidProperties.forwardSpeed;
 
             float3 lTP = localTransform.Position;
-            localTransform.Rotation = Quaternion.Slerp(
-                localTransform.Rotation,
-                Quaternion.LookRotation((playerPosition - new Vector3(lTP.x, lTP.y, lTP.z)).normalized),
-                deltaTime * homingBoidProperties.turningSpeed);
-
-            // if (localTransform.Position.y < 1) localTransform.Position.y = 1;
+                localTransform.Rotation = Quaternion.Slerp(
+                    localTransform.Rotation,
+                    Quaternion.LookRotation((playerPosition - new Vector3(lTP.x, lTP.y, lTP.z)).normalized),
+                    deltaTime * homingBoidProperties.turningSpeed);
 
         }).ScheduleParallel();
 
@@ -49,7 +51,10 @@ public partial class EnemySystem : SystemBase
             }
 
         }).Run();
-        SystemAPI.SetSingleton(new GameData { score = score });
+        if (SystemAPI.HasSingleton<GameData>())
+        {
+            SystemAPI.SetSingleton(new GameData { score = score });
+        }
 
         Dependency.Complete();
         ecb.Playback(EntityManager);
