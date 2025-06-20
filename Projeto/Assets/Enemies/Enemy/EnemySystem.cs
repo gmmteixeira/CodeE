@@ -1,7 +1,9 @@
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
+using Unity.Physics.Systems;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -28,10 +30,10 @@ public partial class EnemySystem : SystemBase
             velocity.Linear = forward * homingBoidProperties.forwardSpeed;
 
             float3 lTP = localTransform.Position;
-                localTransform.Rotation = Quaternion.Slerp(
-                    localTransform.Rotation,
-                    Quaternion.LookRotation((playerPosition - new Vector3(lTP.x, lTP.y, lTP.z)).normalized),
-                    deltaTime * homingBoidProperties.turningSpeed);
+            localTransform.Rotation = Quaternion.Slerp(
+                localTransform.Rotation,
+                Quaternion.LookRotation((playerPosition - new Vector3(lTP.x, lTP.y, lTP.z)).normalized),
+                deltaTime * homingBoidProperties.turningSpeed);
 
         }).ScheduleParallel();
 
@@ -47,7 +49,6 @@ public partial class EnemySystem : SystemBase
                 });
                 ecbParallel.DestroyEntity(entityInQueryIndex, entity);
                 score += 1;
-                Debug.Log($"Enemy destroyed. Score: {score}");
             }
 
         }).Run();

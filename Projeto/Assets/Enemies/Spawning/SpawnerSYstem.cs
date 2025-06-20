@@ -37,10 +37,6 @@ public partial class SpawnerSystem : SystemBase
                         Scale = .55f
                     });
                 }
-                else
-                {
-                    ecb.DestroyEntity(entity);
-                }
 
             }
         }).Run();

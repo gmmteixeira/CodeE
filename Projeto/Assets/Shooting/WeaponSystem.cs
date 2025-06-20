@@ -15,7 +15,6 @@ public partial class ShootingSystem : SystemBase
     {
         base.OnCreate();
         _ecbSystem = World.GetOrCreateSystemManaged<BeginSimulationEntityCommandBufferSystem>();
-
         RequireForUpdate<WeaponProperties>();
     }
 
@@ -34,29 +33,46 @@ public partial class ShootingSystem : SystemBase
         );
         quaternion spawnRotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up());
 
-        Entities
-            .ForEach((Entity entity, ref WeaponProperties weaponProps) =>
+        // Singleton pattern: get the only entity with WeaponProperties
+        EntityQuery weaponQuery = GetEntityQuery(ComponentType.ReadWrite<WeaponProperties>());
+        if (weaponQuery.CalculateEntityCount() == 0)
+            return;
+
+        Entity weaponEntity = weaponQuery.GetSingletonEntity();
+        var weaponProps = EntityManager.GetComponentData<WeaponProperties>(weaponEntity);
+
+        weaponProps.cooldownTimer -= deltaTime;
+
+        bool fired = false;
+        if (shootInput != 0 && weaponProps.cooldownTimer <= 0f)
+        {
+            weaponProps.cooldownTimer = weaponProps.cooldownAmount;
+            Entity sound = ecb.Instantiate(weaponProps.soundEffect);
+            ecb.AddComponent(sound, new Expiration
             {
-                weaponProps.cooldownTimer -= deltaTime;
+                timeToLive = 1.5f
+            });
+            Entity spawned = ecb.Instantiate(weaponProps.projectile);
+            ecb.SetComponent(spawned, new LocalTransform
+            {
+                Position = spawnPosition,
+                Rotation = spawnRotation,
+                Scale = 1
+            });
+            ecb.SetComponent(spawned, new PhysicsVelocity
+            {
+                Linear = math.forward(spawnRotation) * weaponProps.speed,
+                Angular = float3.zero
+            });
 
-                if (shootInput != 0 && weaponProps.cooldownTimer <= 0f)
-                {
-                    weaponProps.cooldownTimer = weaponProps.cooldownAmount;
+            fired = true;
+        }
 
-                    Entity spawned = ecb.Instantiate(weaponProps.projectile);
-                    ecb.SetComponent(spawned, new LocalTransform
-                    {
-                        Position = spawnPosition,
-                        Rotation = spawnRotation,
-                        Scale = 1
-                    });
-                    ecb.SetComponent(spawned, new PhysicsVelocity
-                    {
-                        Linear = math.forward(spawnRotation) * weaponProps.speed,
-                        Angular = float3.zero
-                    });
-                }
-            }).Schedule();
+        // Write back the modified struct
+        EntityManager.SetComponentData(weaponEntity, weaponProps);
+
+        if (fired)
+            WeaponEvents.WeaponFired();
 
         _ecbSystem.AddJobHandleForProducer(Dependency);
     }

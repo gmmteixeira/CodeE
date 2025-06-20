@@ -8,6 +8,7 @@ public class WeaponAuthoring : MonoBehaviour
     public float cooldownAmount;
     private float cooldownTimer;
     public float speed;
+    public GameObject soundEffect;
 
     private class Baker : Baker<WeaponAuthoring>
     {
@@ -18,7 +19,8 @@ public class WeaponAuthoring : MonoBehaviour
                 projectile = GetEntity(authoring.projectile, TransformUsageFlags.Dynamic),
                 cooldownAmount = authoring.cooldownAmount,
                 cooldownTimer = authoring.cooldownTimer,
-                speed = authoring.speed
+                speed = authoring.speed,
+                soundEffect = GetEntity(authoring.soundEffect, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -30,5 +32,6 @@ public struct WeaponProperties : IComponentData
     public float cooldownAmount;
     public float cooldownTimer;
     public float speed;
-    
+    public Entity soundEffect;
+
 }

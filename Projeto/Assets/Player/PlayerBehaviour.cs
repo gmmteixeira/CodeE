@@ -1,6 +1,8 @@
 using Unity.Entities;
+using Unity.Physics;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
@@ -21,7 +23,7 @@ public class PlayerBehaviour : MonoBehaviour
 
         EntityArchetype archetype = entityManager.CreateArchetype(typeof(PlayerPosition));
         playerPositionEntity = entityManager.CreateEntity(archetype);
-        
+
         entityManager.AddComponentData(playerPositionEntity, new PlayerPosition
         {
             vector3 = transform.position
@@ -44,7 +46,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R))
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+            Scene currentScene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(currentScene.name);
         }
     }
 

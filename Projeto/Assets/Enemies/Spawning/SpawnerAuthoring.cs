@@ -22,6 +22,10 @@ class SpawnerAuthoring : MonoBehaviour
                 cooldownVarMin = authoring.cooldownVarMin,
                 cooldownVarMax = authoring.cooldownVarMax
             });
+            AddComponent(entity, new Expiration
+            {
+                timeToLive = 5f
+            });
         }
     }
 }
