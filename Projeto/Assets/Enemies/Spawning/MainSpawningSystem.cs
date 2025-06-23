@@ -11,11 +11,11 @@ public partial class MainSpawningSystem : SystemBase
         float deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-        if (!SystemAPI.HasSingleton<MainSpawningProperties>() || !SystemAPI.HasSingleton<GameData>())
+        if (!SystemAPI.HasSingleton<MainSpawningProperties>() || !SystemAPI.HasSingleton<GameComponentData>())
             return;
 
         ref var mainSpawning = ref SystemAPI.GetSingletonRW<MainSpawningProperties>().ValueRW;
-        ref var score = ref SystemAPI.GetSingletonRW<GameData>().ValueRW.score;
+        ref var score = ref SystemAPI.GetSingletonRW<GameComponentData>().ValueRW.score;
 
         mainSpawning.cooldown -= deltaTime;
         if (mainSpawning.cooldown <= 0f)

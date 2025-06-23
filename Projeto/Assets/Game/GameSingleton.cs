@@ -10,7 +10,7 @@ public class GameSingleton : MonoBehaviour
         public override void Bake(GameSingleton authoring)
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent(entity, new GameData
+            AddComponent(entity, new GameComponentData
             {
                 score = 0,
                 seed = authoring.seed
@@ -18,7 +18,7 @@ public class GameSingleton : MonoBehaviour
         }
     }
 }
-public struct GameData : IComponentData
+public struct GameComponentData : IComponentData
 {
     public int score;
     public int seed;

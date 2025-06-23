@@ -10,6 +10,7 @@ using Unity.Physics;
 public partial class ShootingSystem : SystemBase
 {
     private EntityCommandBufferSystem _ecbSystem;
+    
 
     protected override void OnCreate()
     {
@@ -20,6 +21,12 @@ public partial class ShootingSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        PlayerSingletonData playerData = default;
+        bool hasPlayerData = SystemAPI.HasSingleton<PlayerSingletonData>();
+        if (hasPlayerData)
+        {
+            playerData = SystemAPI.GetSingleton<PlayerSingletonData>();
+        }
         var ecb = _ecbSystem.CreateCommandBuffer();
         float deltaTime = SystemAPI.Time.DeltaTime;
 
@@ -32,6 +39,8 @@ public partial class ShootingSystem : SystemBase
             Camera.main.transform.position.z
         );
         quaternion spawnRotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up());
+        // If your model's forward is +Y, rotate -90° around X to align Z+ to Y+
+        spawnRotation = math.mul(spawnRotation, quaternion.RotateX(-math.radians(90f)));
 
         // Singleton pattern: get the only entity with WeaponProperties
         EntityQuery weaponQuery = GetEntityQuery(ComponentType.ReadWrite<WeaponProperties>());
@@ -42,9 +51,8 @@ public partial class ShootingSystem : SystemBase
         var weaponProps = EntityManager.GetComponentData<WeaponProperties>(weaponEntity);
 
         weaponProps.cooldownTimer -= deltaTime;
-
         bool fired = false;
-        if (shootInput != 0 && weaponProps.cooldownTimer <= 0f)
+        if (shootInput != 0 && weaponProps.cooldownTimer <= 0f && playerData.isAlive)
         {
             weaponProps.cooldownTimer = weaponProps.cooldownAmount;
             Entity sound = ecb.Instantiate(weaponProps.soundEffect);
@@ -57,11 +65,11 @@ public partial class ShootingSystem : SystemBase
             {
                 Position = spawnPosition,
                 Rotation = spawnRotation,
-                Scale = 1
+                Scale = 1.25f
             });
             ecb.SetComponent(spawned, new PhysicsVelocity
             {
-                Linear = math.forward(spawnRotation) * weaponProps.speed,
+                Linear = math.mul(spawnRotation, new float3(0, -1, 0)) * weaponProps.speed,
                 Angular = float3.zero
             });
 

@@ -1,14 +1,14 @@
 using Unity.Entities;
 using UnityEngine;
 
-class MainSpawningAuthoring : MonoBehaviour
+public class MainSpawningAuthoring : MonoBehaviour
 {
     public GameObject spawnerPrefab;
     public float cooldown = 5f;
     public float cooldownVar = 1f;
     public int ringdistance;
     public float yOffset = 0f;
-    class MainSpawningAuthoringBaker : Baker<MainSpawningAuthoring>
+    class Baker : Baker<MainSpawningAuthoring>
     {
         public override void Bake(MainSpawningAuthoring authoring)
         {

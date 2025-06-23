@@ -14,11 +14,19 @@ public partial class EnemySystem : SystemBase
         float deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = new EntityCommandBuffer(Allocator.TempJob);
         var ecbParallel = ecb.AsParallelWriter();
-        Vector3 playerPosition = SystemAPI.GetSingleton<PlayerPosition>().vector3;
-        int score = 0;
-        if (SystemAPI.HasSingleton<GameData>())
+        Vector3 playerPosition;
+        if (SystemAPI.HasSingleton<PlayerSingletonData>())
         {
-            score = SystemAPI.GetSingleton<GameData>().score;
+            // Get the player entity and its LocalTransform
+            var playerEntity = SystemAPI.GetSingletonEntity<PlayerSingletonData>();
+            var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
+            playerPosition = playerTransform.Position;
+        }
+        else return;
+        int score = 0;
+        if (SystemAPI.HasSingleton<GameComponentData>())
+        {
+            score = SystemAPI.GetSingleton<GameComponentData>().score;
         }
 
         Entities
@@ -38,7 +46,7 @@ public partial class EnemySystem : SystemBase
         }).ScheduleParallel();
 
 
-        Entities.WithoutBurst().ForEach((Entity entity, int entityInQueryIndex, AudioSource audioSource, in HealthProperties damageProperties) =>
+        Entities.WithoutBurst().ForEach((Entity entity, int entityInQueryIndex, in HealthProperties damageProperties) =>
         {
             if (damageProperties.health <= 0)
             {
@@ -52,13 +60,69 @@ public partial class EnemySystem : SystemBase
             }
 
         }).Run();
-        if (SystemAPI.HasSingleton<GameData>())
+        if (SystemAPI.HasSingleton<GameComponentData>())
         {
-            SystemAPI.SetSingleton(new GameData { score = score });
+            SystemAPI.SetSingleton(new GameComponentData { score = score });
         }
 
         Dependency.Complete();
         ecb.Playback(EntityManager);
         ecb.Dispose();
+    }
+}
+
+[BurstCompile]
+[UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+[UpdateAfter(typeof(PhysicsSystemGroup))]
+public partial struct EnemyTriggerSystem : ISystem
+{
+    public void OnUpdate(ref SystemState state)
+    {
+        // Ensure all dependencies (including physics jobs) are complete before accessing simulation data
+        state.Dependency.Complete();
+
+        var simSingleton = SystemAPI.GetSingleton<SimulationSingleton>();
+        var sim = simSingleton.AsSimulation();
+
+        var ecb = new EntityCommandBuffer(Allocator.Temp);
+        var entityManager = state.EntityManager;
+
+        var processedEnemies = new NativeHashSet<Entity>(16, Allocator.Temp);
+
+        foreach (var triggerEvent in sim.TriggerEvents)
+        {
+
+            var entityA = triggerEvent.EntityA;
+            var entityB = triggerEvent.EntityB;
+
+            bool aIsEnemy = SystemAPI.HasComponent<HomingBoidProperties>(entityA);
+            bool bIsEnemy = SystemAPI.HasComponent<HomingBoidProperties>(entityB);
+            bool aIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityA);
+            bool bIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityB);
+
+            void ProcessEnemyHit(Entity enemy, Entity player)
+            {
+                if (!processedEnemies.Add(enemy))
+                    return;
+
+                if (entityManager.GetComponentData<PlayerSingletonData>(player).isAlive)
+                {
+                    ecb.SetComponent(player, new PlayerSingletonData { isAlive = false });
+                }
+            }
+
+            if (aIsEnemy && bIsPlayer)
+            {
+                ProcessEnemyHit(entityA, entityB);
+            }
+            else if (bIsEnemy && aIsPlayer)
+            {
+                ProcessEnemyHit(entityB, entityA);
+            }
+        }
+
+        ecb.Playback(state.EntityManager);
+        ecb.Dispose();
+        processedEnemies.Dispose();
     }
 }
