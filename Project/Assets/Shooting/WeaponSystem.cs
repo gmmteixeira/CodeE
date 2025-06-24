@@ -40,7 +40,7 @@ public partial class ShootingSystem : SystemBase
         );
         quaternion spawnRotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up());
         // If your model's forward is +Y, rotate -90° around X to align Z+ to Y+
-        spawnRotation = math.mul(spawnRotation, quaternion.RotateX(-math.radians(90f)));
+        quaternion projectileSpawnRotation = math.mul(spawnRotation, quaternion.RotateX(-math.radians(90f)));
 
         // Singleton pattern: get the only entity with WeaponProperties
         EntityQuery weaponQuery = GetEntityQuery(ComponentType.ReadWrite<WeaponProperties>());
@@ -56,6 +56,12 @@ public partial class ShootingSystem : SystemBase
         {
             weaponProps.cooldownTimer = weaponProps.cooldownAmount;
             Entity sound = ecb.Instantiate(weaponProps.soundEffect);
+            ecb.SetComponent(sound, new LocalTransform
+            {
+                Position = spawnPosition,
+                Rotation = spawnRotation,
+                Scale = 1.0f
+            });
             ecb.AddComponent(sound, new Expiration
             {
                 timeToLive = 1.5f
@@ -64,12 +70,12 @@ public partial class ShootingSystem : SystemBase
             ecb.SetComponent(spawned, new LocalTransform
             {
                 Position = spawnPosition,
-                Rotation = spawnRotation,
+                Rotation = projectileSpawnRotation,
                 Scale = 1.25f
             });
             ecb.SetComponent(spawned, new PhysicsVelocity
             {
-                Linear = math.mul(spawnRotation, new float3(0, -1, 0)) * weaponProps.speed,
+                Linear = math.mul(projectileSpawnRotation, new float3(0, -1, 0)) * weaponProps.speed,
                 Angular = float3.zero
             });
 

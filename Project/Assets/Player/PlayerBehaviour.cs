@@ -8,14 +8,17 @@ using UnityEngine.SceneManagement;
 
 public class PlayerBehaviour : MonoBehaviour
 {
-    public float speed = 6f;
+    public float speed;
+    public float jumpForce;
     public ScriptableRendererFeature deathEffectFeature;
-    private InputAction movement;
+    private InputAction movementAction;
+    private InputAction jumpAction;
     private Rigidbody rb;
     private Quaternion yaw;
     private Vector2 move;
-    bool isAlive = true;
-
+    private float jump;
+    private bool isAlive = true;
+    public bool floored = false;
 
 
     private EntityManager entityManager;
@@ -27,6 +30,21 @@ public class PlayerBehaviour : MonoBehaviour
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         deathEffectFeature.SetActive(false);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            floored = true;
+        }
+    }
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            floored = false;
+        }
     }
 
     private void OnEnable()
@@ -61,8 +79,16 @@ public class PlayerBehaviour : MonoBehaviour
                     float camYaw = Camera.main.transform.eulerAngles.y;
                     yaw = Quaternion.Euler(0, camYaw, 0);
 
-                    movement = InputSystem.actions.FindAction("move");
-                    move = movement.ReadValue<Vector2>();
+                    movementAction = InputSystem.actions.FindAction("move");
+                    jumpAction = InputSystem.actions.FindAction("jump");
+                    move = movementAction.ReadValue<Vector2>();
+                    jump = jumpAction.ReadValue<float>();
+
+                    if (jump > 0f && floored)
+                    {
+                        floored = false;
+                        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                    }
 
                     if (localTransform.Position.y < -1f) playerData.isAlive = false;
                 }

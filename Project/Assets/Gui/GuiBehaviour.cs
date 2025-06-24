@@ -12,6 +12,7 @@ public class GuiBehaviour : MonoBehaviour
     public TextMeshProUGUI highScore;
     public TextMeshProUGUI endScore;
     public TextMeshProUGUI restartTip;
+    public GameObject hand;
     private GameData gameData;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,6 +33,7 @@ public class GuiBehaviour : MonoBehaviour
         endScore.gameObject.SetActive(false);
         restartTip.gameObject.SetActive(false);
         score.gameObject.SetActive(true);
+        hand.SetActive(true);
     }
     private void Awake()
     {
@@ -70,6 +72,7 @@ public class GuiBehaviour : MonoBehaviour
         restartTip.gameObject.SetActive(true);
         endScore.text = score.text;
         highScore.text = "High Score: " + gameData.highscore.ToString();
+        hand.SetActive(false);
     }
 
     private void OnDisable()

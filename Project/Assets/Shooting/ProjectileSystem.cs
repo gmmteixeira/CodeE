@@ -57,8 +57,9 @@ public partial struct ProjectileTriggerSystem : ISystem
             bool bIsProjectile = entityManager.HasComponent<ProjectileDamageProperties>(entityB);
             bool aHasHealth = entityManager.HasComponent<HealthProperties>(entityA);
             bool bHasHealth = entityManager.HasComponent<HealthProperties>(entityB);
+            bool aIsArenaCollider = entityManager.HasComponent<ArenaCollider>(entityA);
+            bool bIsArenaCollider = entityManager.HasComponent<ArenaCollider>(entityB);
 
-            // Helper function to process projectile hit
             void ProcessProjectileHit(Entity projectile, Entity target)
             {
                 if (!processedProjectiles.Add(projectile))
@@ -76,6 +77,13 @@ public partial struct ProjectileTriggerSystem : ISystem
                 });
             }
 
+            void ProcessArenaCollision(Entity projectile)
+            {
+                if (!processedProjectiles.Add(projectile))
+                    return;
+                ecb.DestroyEntity(projectile);
+            }
+
             if (aIsProjectile && bHasHealth)
             {
                 ProcessProjectileHit(entityA, entityB);
@@ -83,6 +91,14 @@ public partial struct ProjectileTriggerSystem : ISystem
             else if (bIsProjectile && aHasHealth)
             {
                 ProcessProjectileHit(entityB, entityA);
+            }
+            else if (aIsProjectile && bIsArenaCollider)
+            {
+                ProcessArenaCollision(entityA);
+            }
+            else if (bIsProjectile && aIsArenaCollider)
+            {
+                ProcessArenaCollision(entityB);
             }
         }
 

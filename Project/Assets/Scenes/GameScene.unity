@@ -167,7 +167,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 40
+  jumpForce: 6
   deathEffectFeature: {fileID: -8704553265510409494, guid: f288ae1f4751b564a96ac7587541f7a2, type: 2}
+  floored: 0
 --- !u!54 &199189338
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -256,7 +258,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 120
+  field of view: 130
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -724,6 +726,38 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1575163603}
   m_SourcePrefab: {fileID: 100100000, guid: a16953afe0623354d81f8bd7d8f5c080, type: 3}
+--- !u!1 &686712598 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2287050933077416473, guid: 73c5519ccae96594d9890e5888d28c95, type: 3}
+  m_PrefabInstance: {fileID: 3723206374085751673}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &686712603
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 686712598}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &748799242
 GameObject:
   m_ObjectHideFlags: 0
@@ -886,7 +920,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -55}
+  m_AnchoredPosition: {x: 0, y: -65}
   m_SizeDelta: {x: 600, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &907480855
@@ -1022,7 +1056,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 40}
+  m_AnchoredPosition: {x: 0, y: 57}
   m_SizeDelta: {x: 700, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1099493947
@@ -1450,6 +1484,7 @@ MonoBehaviour:
   highScore: {fileID: 1110494520}
   endScore: {fileID: 1258388160}
   restartTip: {fileID: 1099493947}
+  hand: {fileID: 1575163600}
 --- !u!114 &1607137709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1499,9 +1534,9 @@ Canvas:
   m_GameObject: {fileID: 1607137707}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 330585545}
+  m_PlaneDistance: 0.35
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -1586,12 +1621,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287050933077416473, guid: 73c5519ccae96594d9890e5888d28c95, type: 3}
       propertyPath: m_Name
-      value: arena
+      value: Arena
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287050933077416473, guid: 73c5519ccae96594d9890e5888d28c95, type: 3}
+      propertyPath: m_TagString
+      value: Floor
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2287050933077416473, guid: 73c5519ccae96594d9890e5888d28c95, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 686712603}
   m_SourcePrefab: {fileID: 100100000, guid: 73c5519ccae96594d9890e5888d28c95, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -1600,7 +1642,7 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 748799245}
+  - {fileID: 1607137712}
   - {fileID: 199189336}
   - {fileID: 3723206374085751673}
-  - {fileID: 1607137712}
   - {fileID: 604508411}
