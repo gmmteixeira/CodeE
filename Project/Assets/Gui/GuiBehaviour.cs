@@ -80,7 +80,8 @@ public class GuiBehaviour : MonoBehaviour
         PlayerEvents.OnPlayerDeath -= OnPlayerDeath;
     }
     void Update()
-    {
+    {  
+        
         var world = World.DefaultGameObjectInjectionWorld;
         if (world != null)
         {

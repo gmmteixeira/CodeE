@@ -21,6 +21,7 @@ public partial class ShootingSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        var camTransform = Camera.main.transform;
         PlayerSingletonData playerData = default;
         bool hasPlayerData = SystemAPI.HasSingleton<PlayerSingletonData>();
         if (hasPlayerData)
@@ -33,12 +34,14 @@ public partial class ShootingSystem : SystemBase
         InputAction shootAction = InputSystem.actions.FindAction("Attack");
         float shootInput = shootAction?.ReadValue<float>() ?? 0f;
 
+        // Adjust spawn position for pitch: spawn slightly in front of camera, accounting for pitch
+        float3 forwardOffset = camTransform.forward * 0.3f + camTransform.up * -0.5f;
         float3 spawnPosition = new float3(
-            Camera.main.transform.position.x,
-            Camera.main.transform.position.y - 0.75f,
-            Camera.main.transform.position.z
-        );
-        quaternion spawnRotation = quaternion.LookRotationSafe(Camera.main.transform.forward, math.up());
+            camTransform.position.x,
+            camTransform.position.y,
+            camTransform.position.z
+        ) + forwardOffset;
+        quaternion spawnRotation = quaternion.LookRotationSafe(camTransform.forward, math.up());
         // If your model's forward is +Y, rotate -90° around X to align Z+ to Y+
         quaternion projectileSpawnRotation = math.mul(spawnRotation, quaternion.RotateX(-math.radians(90f)));
 
@@ -66,18 +69,38 @@ public partial class ShootingSystem : SystemBase
             {
                 timeToLive = 1.5f
             });
-            Entity spawned = ecb.Instantiate(weaponProps.projectile);
-            ecb.SetComponent(spawned, new LocalTransform
+            for (int i = 0; i < weaponProps.projectileCount; i++)
             {
-                Position = spawnPosition,
-                Rotation = projectileSpawnRotation,
-                Scale = 1.25f
-            });
-            ecb.SetComponent(spawned, new PhysicsVelocity
-            {
-                Linear = math.mul(projectileSpawnRotation, new float3(0, -1, 0)) * weaponProps.speed,
-                Angular = float3.zero
-            });
+                // Biased circular spread (more projectiles near center)
+                float angle = UnityEngine.Random.Range(0f, 360f);
+                float radius = UnityEngine.Random.Range(0f, 1f) * weaponProps.spread;
+
+                float pitch = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
+                float yaw = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
+
+                quaternion spreadRotation = math.mul(
+                    quaternion.RotateX(math.radians(pitch)),
+                    quaternion.RotateZ(math.radians(yaw))
+                );
+                quaternion randomizedRotation = math.mul(projectileSpawnRotation, spreadRotation);
+
+                Entity spawned = ecb.Instantiate(weaponProps.projectile);
+                ecb.SetComponent(spawned, new LocalTransform
+                {
+                    Position = spawnPosition,
+                    Rotation = randomizedRotation,
+                    Scale = 1.25f
+                });
+                ecb.AddComponent(spawned, new ProjectileDamageProperties
+                {
+                    damage = weaponProps.damage
+                });
+                ecb.SetComponent(spawned, new PhysicsVelocity
+                {
+                    Linear = math.mul(randomizedRotation, new float3(0, -1, 0)) * weaponProps.speed,
+                    Angular = float3.zero
+                });
+            }
 
             fired = true;
         }

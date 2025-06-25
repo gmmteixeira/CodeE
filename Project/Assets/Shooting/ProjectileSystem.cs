@@ -35,7 +35,7 @@ public partial struct ProjectileTriggerSystem : ISystem
 {
     public void OnUpdate(ref SystemState state)
     {
-        
+
         var world = SystemAPI.GetSingleton<PhysicsWorldSingleton>().PhysicsWorld;
         var simSingleton = SystemAPI.GetSingleton<SimulationSingleton>();
         var sim = simSingleton.AsSimulation();
@@ -47,6 +47,7 @@ public partial struct ProjectileTriggerSystem : ISystem
         var entityManager = state.EntityManager;
 
         var processedProjectiles = new NativeHashSet<Entity>(16, Allocator.Temp);
+        var updatedHealths = new NativeHashMap<Entity, int>(16, Allocator.Temp);
 
         foreach (var triggerEvent in sim.TriggerEvents)
         {
@@ -60,21 +61,39 @@ public partial struct ProjectileTriggerSystem : ISystem
             bool aIsArenaCollider = entityManager.HasComponent<ArenaCollider>(entityA);
             bool bIsArenaCollider = entityManager.HasComponent<ArenaCollider>(entityB);
 
+
+
             void ProcessProjectileHit(Entity projectile, Entity target)
             {
                 if (!processedProjectiles.Add(projectile))
                     return;
 
-                var damage = entityManager.GetComponentData<ProjectileDamageProperties>(projectile).damage;
-                var health = entityManager.GetComponentData<HealthProperties>(target);
-                health.health -= (int)damage;
-                ecb.SetComponent(target, health);
-                ecb.DestroyEntity(projectile);
-                Entity hit = ecb.Instantiate(health.hitEffect);
-                ecb.AddComponent(hit, new Parent
+                int currentHealth;
+                if (!updatedHealths.TryGetValue(target, out currentHealth))
                 {
-                    Value = target
-                });
+                    currentHealth = entityManager.GetComponentData<HealthProperties>(target).health;
+                }
+
+                if (currentHealth > 0)
+                {
+                    var damage = entityManager.GetComponentData<ProjectileDamageProperties>(projectile).damage;
+                    currentHealth -= (int)damage;
+                    updatedHealths[target] = currentHealth;
+
+                    var healthData = entityManager.GetComponentData<HealthProperties>(target);
+                    healthData.health = currentHealth;
+                    ecb.SetComponent(target, healthData);
+
+                    if (currentHealth <= 0)
+                    {
+                        ecb.DestroyEntity(projectile);
+                        Entity hit = ecb.Instantiate(healthData.hitEffect);
+                        ecb.AddComponent(hit, new Parent
+                        {
+                            Value = target
+                        });
+                    }
+                }
             }
 
             void ProcessArenaCollision(Entity projectile)
@@ -106,5 +125,6 @@ public partial struct ProjectileTriggerSystem : ISystem
 
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
+        updatedHealths.Dispose();
     }
 }

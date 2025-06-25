@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b7a74faa1c45d42972f4236db2ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardSpeed: 9
+  forwardSpeed: 13
   turningSpeed: 2
   health: 3
   deathEffect: {fileID: 2481864664759427857, guid: b9cfd31e9fdf5af4e8c7a3e8fbd1c53f, type: 3}
@@ -129,7 +129,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0

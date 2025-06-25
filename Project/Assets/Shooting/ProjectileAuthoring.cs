@@ -12,7 +12,6 @@ public class ProjectileAuthoring : MonoBehaviour
         public override void Bake(ProjectileAuthoring authoring)
         {
             AddComponent(GetEntity(TransformUsageFlags.Dynamic), new ProjectileFlightProperties {distanceLimit = authoring.distanceLimit});
-            AddComponent(GetEntity(TransformUsageFlags.Dynamic), new ProjectileDamageProperties {damage = authoring.damage});
         }
     }
 }

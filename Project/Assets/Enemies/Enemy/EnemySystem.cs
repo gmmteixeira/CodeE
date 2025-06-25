@@ -9,11 +9,14 @@ using UnityEngine;
 
 public partial class EnemySystem : SystemBase
 {
+    protected override void OnCreate()
+    {
+
+    }
     protected override void OnUpdate()
     {
         float deltaTime = SystemAPI.Time.DeltaTime;
-        var ecb = new EntityCommandBuffer(Allocator.TempJob);
-        var ecbParallel = ecb.AsParallelWriter();
+        var ecb = new EntityCommandBuffer(Allocator.Temp);
         Vector3 playerPosition;
         if (SystemAPI.HasSingleton<PlayerSingletonData>())
         {
@@ -46,16 +49,17 @@ public partial class EnemySystem : SystemBase
         }).ScheduleParallel();
 
 
-        Entities.WithoutBurst().ForEach((Entity entity, int entityInQueryIndex, in HealthProperties damageProperties) =>
+        Entities.WithoutBurst().ForEach((Entity entity, in HealthProperties damageProperties) =>
         {
             if (damageProperties.health <= 0)
             {
-                Entity deathEntity = ecbParallel.Instantiate(entityInQueryIndex, damageProperties.deathEffect);
-                ecbParallel.SetComponent(entityInQueryIndex, deathEntity, new LocalTransform
+                Entity deathEntity = ecb.Instantiate(damageProperties.deathEffect);
+                ecb.SetComponent(deathEntity, new LocalTransform
                 {
                     Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
+                    Scale = 1
                 });
-                ecbParallel.DestroyEntity(entityInQueryIndex, entity);
+                ecb.DestroyEntity(entity);
                 score += 1;
             }
 

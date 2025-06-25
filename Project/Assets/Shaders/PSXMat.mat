@@ -37,7 +37,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Color_Compression: 0
     - _Float: 0.9
+    - _Resolution: 720
     - _Vertext_Warp: 720
     m_Colors: []
   m_BuildTextureStacks: []
