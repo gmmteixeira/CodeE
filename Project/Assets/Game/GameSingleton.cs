@@ -1,10 +1,9 @@
+using System;
 using Unity.Entities;
 using UnityEngine;
 
 public class GameSingleton : MonoBehaviour
 {
-    public int seed = 1;
-    
     private class GameSingletonBaker : Baker<GameSingleton>
     {
         public override void Bake(GameSingleton authoring)
@@ -13,7 +12,6 @@ public class GameSingleton : MonoBehaviour
             AddComponent(entity, new GameComponentData
             {
                 score = 0,
-                seed = authoring.seed
             });
         }
     }
@@ -21,5 +19,5 @@ public class GameSingleton : MonoBehaviour
 public struct GameComponentData : IComponentData
 {
     public int score;
-    public int seed;
+
 }

@@ -57,7 +57,18 @@ public partial class ShootingSystem : SystemBase
         bool fired = false;
         if (shootInput != 0 && weaponProps.cooldownTimer <= 0f && playerData.isAlive)
         {
-            weaponProps.cooldownTimer = weaponProps.cooldownAmount;
+            float cooldownIncrement = 0;
+            int projectileCountIncrement = 0;
+            float spreadIncrement = 0;
+
+            Entities.ForEach((ref CardPowerup cardPowerup) =>
+            {
+                cooldownIncrement += cardPowerup.cooldownIncrement;
+                projectileCountIncrement += cardPowerup.projectileCountIncrement;
+                spreadIncrement += cardPowerup.spreadIncrement;
+            }).Run();
+
+            weaponProps.cooldownTimer = weaponProps.cooldownAmount + cooldownIncrement;
             Entity sound = ecb.Instantiate(weaponProps.soundEffect);
             ecb.SetComponent(sound, new LocalTransform
             {
@@ -69,11 +80,11 @@ public partial class ShootingSystem : SystemBase
             {
                 timeToLive = 1.5f
             });
-            for (int i = 0; i < weaponProps.projectileCount; i++)
+            for (int i = 0; i < weaponProps.projectileCount + projectileCountIncrement; i++)
             {
                 // Biased circular spread (more projectiles near center)
                 float angle = UnityEngine.Random.Range(0f, 360f);
-                float radius = UnityEngine.Random.Range(0f, 1f) * weaponProps.spread;
+                float radius = UnityEngine.Random.Range(0f, 1f) * (weaponProps.spread + spreadIncrement);
 
                 float pitch = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
                 float yaw = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;

@@ -1,3 +1,4 @@
+using System;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -61,6 +62,37 @@ public partial class EnemySystem : SystemBase
                 });
                 ecb.DestroyEntity(entity);
                 score += 1;
+
+                if (UnityEngine.Random.Range(0, 30) < 30)
+                {
+                    Entity powerupPrefab = ecb.Instantiate(damageProperties.powerupPrefab);
+                    ecb.SetComponent(powerupPrefab, new LocalTransform
+                    {
+                        Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
+                        Rotation = Quaternion.identity,
+                        Scale = 1f
+                    });
+
+                    int powerupInt = UnityEngine.Random.Range(0, 1);
+                    switch (powerupInt)
+                    {
+                        case 0:
+                            ecb.SetComponent(powerupPrefab, new CardPickup
+                            {
+                                cooldownIncrement = -0.1f
+                            });
+                            return;
+                        case 1:
+                            ecb.SetComponent(powerupPrefab, new CardPickup
+                            {
+                                projectileCountIncrement = 6,
+                                spreadIncrement = 10
+                            });
+                            return;
+                        default: return;
+                    }
+                }
+                
             }
 
         }).Run();
