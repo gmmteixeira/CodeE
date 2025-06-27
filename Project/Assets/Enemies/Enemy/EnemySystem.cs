@@ -1,4 +1,3 @@
-using System;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -18,21 +17,24 @@ public partial class EnemySystem : SystemBase
     {
         float deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        Vector3 playerPosition;
+
+        Vector3 playerPosition = Vector3.zero;
         if (SystemAPI.HasSingleton<PlayerSingletonData>())
         {
             // Get the player entity and its LocalTransform
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerSingletonData>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             playerPosition = playerTransform.Position;
-        }
-        else return;
+        } else return;
+        var powerupBufferEntity = SystemAPI.GetSingletonEntity<PowerupPrefabBufferElement>();
+        var powerupBuffer = SystemAPI.GetBuffer<PowerupPrefabBufferElement>(powerupBufferEntity);
+        
         int score = 0;
         if (SystemAPI.HasSingleton<GameComponentData>())
         {
             score = SystemAPI.GetSingleton<GameComponentData>().score;
-        }
-
+        } else return;
+        
         Entities
         .WithAll<PhysicsVelocity>()
         .ForEach((ref PhysicsMass mass, ref PhysicsVelocity velocity, ref LocalTransform localTransform, in HomingBoidProperties homingBoidProperties) =>
@@ -60,38 +62,24 @@ public partial class EnemySystem : SystemBase
                     Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
                     Scale = 1
                 });
-                ecb.DestroyEntity(entity);
-                score += 1;
 
-                if (UnityEngine.Random.Range(0, 30) < 30)
+                if (UnityEngine.Random.Range(0, 30) < 2)
                 {
-                    Entity powerupPrefab = ecb.Instantiate(damageProperties.powerupPrefab);
+                    int powerupInt = UnityEngine.Random.Range(0, powerupBuffer.Length);
+                    Entity powerupPrefab = ecb.Instantiate(powerupBuffer[powerupInt].Prefab);
                     ecb.SetComponent(powerupPrefab, new LocalTransform
                     {
+                        
                         Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
                         Rotation = Quaternion.identity,
-                        Scale = 1f
+                        Scale = 100f
                     });
 
-                    int powerupInt = UnityEngine.Random.Range(0, 1);
-                    switch (powerupInt)
-                    {
-                        case 0:
-                            ecb.SetComponent(powerupPrefab, new CardPickup
-                            {
-                                cooldownIncrement = -0.1f
-                            });
-                            return;
-                        case 1:
-                            ecb.SetComponent(powerupPrefab, new CardPickup
-                            {
-                                projectileCountIncrement = 6,
-                                spreadIncrement = 10
-                            });
-                            return;
-                        default: return;
-                    }
+                    
                 }
+                
+                ecb.DestroyEntity(entity);
+                score += 1;
                 
             }
 

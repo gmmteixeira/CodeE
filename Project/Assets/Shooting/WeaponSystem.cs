@@ -61,11 +61,15 @@ public partial class ShootingSystem : SystemBase
             int projectileCountIncrement = 0;
             float spreadIncrement = 0;
 
-            Entities.ForEach((ref CardPowerup cardPowerup) =>
+            Entities.ForEach((Entity entity, ref CardPowerup cardPowerup) =>
             {
-                cooldownIncrement += cardPowerup.cooldownIncrement;
-                projectileCountIncrement += cardPowerup.projectileCountIncrement;
-                spreadIncrement += cardPowerup.spreadIncrement;
+                if (cardPowerup.active)
+                {
+                    cooldownIncrement += cardPowerup.cooldownIncrement;
+                    projectileCountIncrement += cardPowerup.projectileCountIncrement;
+                    spreadIncrement += cardPowerup.spreadIncrement;
+                }
+
             }).Run();
 
             weaponProps.cooldownTimer = weaponProps.cooldownAmount + cooldownIncrement;

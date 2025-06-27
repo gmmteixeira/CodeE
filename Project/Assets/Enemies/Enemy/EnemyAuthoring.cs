@@ -8,7 +8,8 @@ public class EnemyAuthoring : MonoBehaviour
     public int health;
     public GameObject deathEffect;
     public GameObject hitEffect;
-    public GameObject prefab;
+    public GameObject cardPickup;
+    public GameObject cardPowerup;
 
     private class Baker : Baker<EnemyAuthoring>
     {
@@ -25,7 +26,8 @@ public class EnemyAuthoring : MonoBehaviour
                 health = authoring.health,
                 deathEffect = GetEntity(authoring.deathEffect, TransformUsageFlags.Dynamic),
                 hitEffect = GetEntity(authoring.hitEffect, TransformUsageFlags.Dynamic),
-                powerupPrefab = GetEntity(authoring.prefab, TransformUsageFlags.Dynamic)
+                cardPickup = GetEntity(authoring.cardPickup, TransformUsageFlags.Dynamic),
+                cardPowerup = GetEntity(authoring.cardPowerup, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -42,5 +44,6 @@ public struct HealthProperties : IComponentData
     public int health;
     public Entity deathEffect;
     public Entity hitEffect;
-    public Entity powerupPrefab;
+    public Entity cardPickup;
+    public Entity cardPowerup;
 }

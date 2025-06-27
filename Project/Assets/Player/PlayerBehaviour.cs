@@ -1,4 +1,3 @@
-using System;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -75,7 +74,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (floored)
         {
-            physicsMaterial.dynamicFriction += 2f * Time.deltaTime;
+            physicsMaterial.dynamicFriction += 1.5f * Time.deltaTime;
             physicsMaterial.dynamicFriction = Mathf.Clamp(physicsMaterial.dynamicFriction, 0f, targetFriction);
         }
         // Update the LocalTransform component with the current position
