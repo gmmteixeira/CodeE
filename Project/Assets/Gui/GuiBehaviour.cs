@@ -4,6 +4,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
 using Unity.Entities;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class GuiBehaviour : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class GuiBehaviour : MonoBehaviour
     public TextMeshProUGUI endScore;
     public TextMeshProUGUI restartTip;
     public GameObject hand;
+    public AudioMixer audioMixer;
     private GameData gameData;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -34,6 +36,7 @@ public class GuiBehaviour : MonoBehaviour
         restartTip.gameObject.SetActive(false);
         score.gameObject.SetActive(true);
         hand.SetActive(true);
+        audioMixer.SetFloat("Volume", 0f);
     }
     private void Awake()
     {
@@ -73,6 +76,7 @@ public class GuiBehaviour : MonoBehaviour
         endScore.text = score.text;
         highScore.text = "High Score: " + gameData.highscore.ToString();
         hand.SetActive(false);
+        audioMixer.SetFloat("Volume", -80f);
     }
 
     private void OnDisable()

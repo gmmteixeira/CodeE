@@ -102,7 +102,6 @@ public partial struct EnemyTriggerSystem : ISystem
 {
     public void OnUpdate(ref SystemState state)
     {
-        // Ensure all dependencies (including physics jobs) are complete before accessing simulation data
         state.Dependency.Complete();
 
         var simSingleton = SystemAPI.GetSingleton<SimulationSingleton>();
@@ -115,7 +114,6 @@ public partial struct EnemyTriggerSystem : ISystem
 
         foreach (var triggerEvent in sim.TriggerEvents)
         {
-
             var entityA = triggerEvent.EntityA;
             var entityB = triggerEvent.EntityB;
 
@@ -123,6 +121,8 @@ public partial struct EnemyTriggerSystem : ISystem
             bool bIsEnemy = SystemAPI.HasComponent<HomingBoidProperties>(entityB);
             bool aIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityA);
             bool bIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityB);
+            bool aIsExplosion = SystemAPI.HasComponent<ExplosionProperties>(entityA);
+            bool bIsExplosion = SystemAPI.HasComponent<ExplosionProperties>(entityB);
 
             void ProcessEnemyHit(Entity enemy, Entity player)
             {
@@ -135,6 +135,21 @@ public partial struct EnemyTriggerSystem : ISystem
                 }
             }
 
+            void ProcessEnemyExplosion(Entity enemy, Entity explosion)
+            {
+                if (!processedEnemies.Add(enemy))
+                    return;
+
+                // Apply damage or destroy enemy
+                if (entityManager.HasComponent<HealthProperties>(enemy))
+                {
+                    var health = entityManager.GetComponentData<HealthProperties>(enemy);
+                    var explosionProps = entityManager.GetComponentData<ExplosionProperties>(explosion);
+                    health.health -= (int)explosionProps.damage;
+                    ecb.SetComponent(enemy, health);
+                }
+            }
+
             if (aIsEnemy && bIsPlayer)
             {
                 ProcessEnemyHit(entityA, entityB);
@@ -142,6 +157,15 @@ public partial struct EnemyTriggerSystem : ISystem
             else if (bIsEnemy && aIsPlayer)
             {
                 ProcessEnemyHit(entityB, entityA);
+            }
+            // Handle enemy-explosion collision
+            else if (aIsEnemy && bIsExplosion)
+            {
+                ProcessEnemyExplosion(entityA, entityB);
+            }
+            else if (bIsEnemy && aIsExplosion)
+            {
+                ProcessEnemyExplosion(entityB, entityA);
             }
         }
 

@@ -82,9 +82,10 @@ public partial struct PowerupTriggerSystem : ISystem
                 {
                     lifeTime = 20,
                     active = true,
-                    cooldownIncrement = cardPickup.cooldownIncrement,
-                    projectileCountIncrement = cardPickup.projectileCountIncrement,
-                    spreadIncrement = cardPickup.spreadIncrement
+                    cooldownModifier = cardPickup.cooldownModifier,
+                    projectileCountModifier = cardPickup.projectileCountModifier,
+                    spreadModifier = cardPickup.spreadModifier,
+                    explosionModifier = cardPickup.explosionModifier
                 });
 
             }

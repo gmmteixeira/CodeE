@@ -76,8 +76,9 @@ public partial struct ProjectileTriggerSystem : ISystem
 
                 if (currentHealth > 0)
                 {
-                    var damage = entityManager.GetComponentData<ProjectileDamageProperties>(projectile).damage;
-                    currentHealth -= (int)damage;
+                    var damage = entityManager.GetComponentData<ProjectileDamageProperties>(projectile);
+                    var localTransform =  entityManager.GetComponentData<LocalTransform>(projectile);
+                    currentHealth -= (int)damage.damage;
                     updatedHealths[target] = currentHealth;
 
                     var healthData = entityManager.GetComponentData<HealthProperties>(target);
@@ -87,6 +88,20 @@ public partial struct ProjectileTriggerSystem : ISystem
                     if (currentHealth <= 0)
                     {
                         ecb.DestroyEntity(projectile);
+                        if (damage.explosion > 1)
+                        {
+                            Entity explosion = ecb.Instantiate(damage.explosionPrefab);
+                            ecb.AddComponent(explosion, new ExplosionProperties
+                            {
+                                damage = damage.damage
+                            });
+                            ecb.SetComponent(explosion, new LocalTransform
+                            {
+                                Position = localTransform.Position,
+                                Rotation = localTransform.Rotation,
+                                Scale = damage.explosion * 3
+                            });
+                        }
                         Entity hit = ecb.Instantiate(healthData.hitEffect);
                         ecb.AddComponent(hit, new Parent
                         {
@@ -98,8 +113,25 @@ public partial struct ProjectileTriggerSystem : ISystem
 
             void ProcessArenaCollision(Entity projectile)
             {
+                var damage = entityManager.GetComponentData<ProjectileDamageProperties>(projectile);
+                var localTransform =  entityManager.GetComponentData<LocalTransform>(projectile);
+                
                 if (!processedProjectiles.Add(projectile))
                     return;
+                if (damage.explosion > 1)
+                {
+                    Entity explosion = ecb.Instantiate(damage.explosionPrefab);
+                    ecb.AddComponent(explosion, new ExplosionProperties
+                    {
+                        damage = damage.damage
+                    });
+                    ecb.SetComponent(explosion, new LocalTransform
+                    {
+                        Position = localTransform.Position,
+                        Rotation = localTransform.Rotation,
+                        Scale = damage.explosion * 2
+                    });
+                }
                 ecb.DestroyEntity(projectile);
             }
 

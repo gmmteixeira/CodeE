@@ -11,6 +11,7 @@ public class WeaponAuthoring : MonoBehaviour
     public float damage;
     public float speed;
     public GameObject soundEffect;
+    public GameObject explosionPrefab;
 
     private class Baker : Baker<WeaponAuthoring>
     {
@@ -25,7 +26,8 @@ public class WeaponAuthoring : MonoBehaviour
                 projectileCount = authoring.projectileCount,
                 spread = authoring.spread,
                 damage = authoring.damage,
-                soundEffect = GetEntity(authoring.soundEffect, TransformUsageFlags.Dynamic)
+                soundEffect = GetEntity(authoring.soundEffect, TransformUsageFlags.Dynamic),
+                explosionPrefab = GetEntity(authoring.explosionPrefab, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -41,5 +43,5 @@ public struct WeaponProperties : IComponentData
     public float damage;
     public float speed;
     public Entity soundEffect;
-
+    public Entity explosionPrefab;
 }

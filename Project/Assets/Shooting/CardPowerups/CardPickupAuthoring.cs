@@ -4,9 +4,10 @@ using UnityEngine;
 public class CardPickupAuthoring : MonoBehaviour
 {
     public GameObject prefab;
-    public float cooldownIncrement;
-    public int projectileCountIncrement;
-    public float spreadIncrement;
+    public float cooldownModifier;
+    public float projectileCountModifier;
+    public float spreadModifier;
+    public float explosionModifier;
     private class Baker : Baker<CardPickupAuthoring>
     {
         public override void Bake(CardPickupAuthoring authoring)
@@ -15,9 +16,10 @@ public class CardPickupAuthoring : MonoBehaviour
             AddComponent(entity, new CardPickup
             {
                 prefab = GetEntity(authoring.prefab, TransformUsageFlags.Dynamic),
-                cooldownIncrement = authoring.cooldownIncrement,
-                projectileCountIncrement = authoring.projectileCountIncrement,
-                spreadIncrement = authoring.spreadIncrement
+                cooldownModifier = authoring.cooldownModifier,
+                projectileCountModifier = authoring.projectileCountModifier,
+                spreadModifier = authoring.spreadModifier,
+                explosionModifier = authoring.explosionModifier
             });
             AddComponent(entity, new Expiration { timeToLive = 30 });
         }
@@ -26,7 +28,8 @@ public class CardPickupAuthoring : MonoBehaviour
 public struct CardPickup : IComponentData
 {
     public Entity prefab;
-    public float cooldownIncrement;
-    public int projectileCountIncrement;
-    public float spreadIncrement;
+    public float cooldownModifier;
+    public float projectileCountModifier;
+    public float spreadModifier;
+    public float explosionModifier;
 }

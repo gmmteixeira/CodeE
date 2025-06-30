@@ -125,9 +125,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 2935196246694458124, guid: 85d8471ac4914c34e9afec464a32b9ab, type: 3}
-  cooldownIncrement: 0.15
-  projectileCountIncrement: 12
-  spreadIncrement: 3
+  cooldownModifier: 0.75
+  projectileCountModifier: 1
+  spreadModifier: 1
+  explosionModifier: 1
 --- !u!54 &5508107468043604786
 Rigidbody:
   m_ObjectHideFlags: 0
