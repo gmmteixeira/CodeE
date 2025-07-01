@@ -4,7 +4,6 @@ using Unity.Transforms;
 using UnityEngine.InputSystem;
 using Unity.Mathematics;
 using Unity.Physics;
-
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateBefore(typeof(TransformSystemGroup))]
 public partial class ShootingSystem : SystemBase
@@ -57,24 +56,46 @@ public partial class ShootingSystem : SystemBase
         bool fired = false;
         if (shootInput != 0 && weaponProps.cooldownTimer <= 0f && playerData.isAlive)
         {
-            float cooldownModifier = 1;
-            float projectileCountModifier = 1;
-            float spreadModifier = 1;
-            float explosionModifier = 1;
+            float cooldown = 1;
+            int projectileCount = 1;
+            float spread = 1;
+            int damage = 1;
+            float explosion = 0;
 
-            Entities.ForEach((Entity entity, ref CardPowerup cardPowerup) =>
+            switch (weaponProps.powerupLevel)
             {
-                if (cardPowerup.active)
-                {
-                    cooldownModifier *= cardPowerup.cooldownModifier;
-                    projectileCountModifier *= cardPowerup.projectileCountModifier;
-                    spreadModifier *= cardPowerup.spreadModifier;
-                    explosionModifier *= cardPowerup.explosionModifier;
-                }
+                case 0:
+                    cooldown = weaponProps.lvl0Cooldown;
+                    projectileCount = weaponProps.lvl0ProjectileCount;
+                    spread = weaponProps.lvl0Spread;
+                    damage = weaponProps.lvl0Damage;
+                    explosion = weaponProps.lvl0Explosion;
+                    break;
+                case 1:
+                    cooldown = weaponProps.lvl1Cooldown;
+                    projectileCount = weaponProps.lvl1ProjectileCount;
+                    spread = weaponProps.lvl1Spread;
+                    damage = weaponProps.lvl1Damage;
+                    explosion = weaponProps.lvl1Explosion;
+                    break;
+                case 2:
+                    cooldown = weaponProps.lvl2Cooldown;
+                    projectileCount = weaponProps.lvl2ProjectileCount;
+                    spread = weaponProps.lvl2Spread;
+                    damage = weaponProps.lvl2Damage;
+                    explosion = weaponProps.lvl2Explosion;
+                    break;
+                case 3:
+                    cooldown = weaponProps.lvl3Cooldown;
+                    projectileCount = weaponProps.lvl3ProjectileCount;
+                    spread = weaponProps.lvl3Spread;
+                    damage = weaponProps.lvl3Damage;
+                    explosion = weaponProps.lvl3Explosion;
+                    break;
+                default: break;
+            }
 
-            }).Run();
-
-            weaponProps.cooldownTimer = weaponProps.cooldownAmount * cooldownModifier;
+            weaponProps.cooldownTimer = cooldown;
             Entity sound = ecb.Instantiate(weaponProps.soundEffect);
             ecb.SetComponent(sound, new LocalTransform
             {
@@ -86,11 +107,11 @@ public partial class ShootingSystem : SystemBase
             {
                 timeToLive = 1.5f
             });
-            for (int i = 0; i < weaponProps.projectileCount * projectileCountModifier; i++)
+            for (int i = 0; i < projectileCount; i++)
             {
                 // Biased circular spread (more projectiles near center)
                 float angle = UnityEngine.Random.Range(0f, 360f);
-                float radius = UnityEngine.Random.Range(0f, 1f) * (weaponProps.spread * spreadModifier);
+                float radius = UnityEngine.Random.Range(0f, 1f) * spread;
 
                 float pitch = Mathf.Cos(angle * Mathf.Deg2Rad) * radius;
                 float yaw = Mathf.Sin(angle * Mathf.Deg2Rad) * radius;
@@ -110,8 +131,8 @@ public partial class ShootingSystem : SystemBase
                 });
                 ecb.AddComponent(spawned, new ProjectileDamageProperties
                 {
-                    damage = weaponProps.damage,
-                    explosion = explosionModifier,
+                    damage = damage,
+                    explosion = explosion,
                     explosionPrefab = weaponProps.explosionPrefab
                     
                 });

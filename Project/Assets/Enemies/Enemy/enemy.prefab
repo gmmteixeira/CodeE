@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forwardSpeed: 13
   turningSpeed: 2
-  health: 3
+  health: 6
   deathEffect: {fileID: 2481864664759427857, guid: b9cfd31e9fdf5af4e8c7a3e8fbd1c53f, type: 3}
   hitEffect: {fileID: 2481864664759427857, guid: cebb958f6b5b2e64c9a60730528bbf3f, type: 3}
   cardPickup: {fileID: 635627687442870852, guid: 8d7496aa4a2fc07408455cd5926c0df7, type: 3}

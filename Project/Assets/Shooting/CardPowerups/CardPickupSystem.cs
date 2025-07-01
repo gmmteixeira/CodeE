@@ -76,18 +76,6 @@ public partial struct PowerupTriggerSystem : ISystem
                     return;
 
                 ecb.DestroyEntity(card);
-                CardPickup cardPickup = entityManager.GetComponentData<CardPickup>(card);
-                Entity powerup = ecb.Instantiate(cardPickup.prefab);
-                ecb.AddComponent(powerup, new CardPowerup
-                {
-                    lifeTime = 20,
-                    active = true,
-                    cooldownModifier = cardPickup.cooldownModifier,
-                    projectileCountModifier = cardPickup.projectileCountModifier,
-                    spreadModifier = cardPickup.spreadModifier,
-                    explosionModifier = cardPickup.explosionModifier
-                });
-
             }
 
             if (aIsCard && bIsPlayer)

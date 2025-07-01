@@ -26,8 +26,6 @@ public partial class EnemySystem : SystemBase
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             playerPosition = playerTransform.Position;
         } else return;
-        var powerupBufferEntity = SystemAPI.GetSingletonEntity<PowerupPrefabBufferElement>();
-        var powerupBuffer = SystemAPI.GetBuffer<PowerupPrefabBufferElement>(powerupBufferEntity);
         
         int score = 0;
         if (SystemAPI.HasSingleton<GameComponentData>())
@@ -65,15 +63,6 @@ public partial class EnemySystem : SystemBase
 
                 if (UnityEngine.Random.Range(0, 30) < 2)
                 {
-                    int powerupInt = UnityEngine.Random.Range(0, powerupBuffer.Length);
-                    Entity powerupPrefab = ecb.Instantiate(powerupBuffer[powerupInt].Prefab);
-                    ecb.SetComponent(powerupPrefab, new LocalTransform
-                    {
-                        
-                        Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
-                        Rotation = Quaternion.identity,
-                        Scale = 100f
-                    });
 
                     
                 }
