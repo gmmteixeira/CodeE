@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5766290009992055833}
   - component: {fileID: 7622090932699790005}
   m_Layer: 0
-  m_Name: ExplosionCard
+  m_Name: PowerupCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

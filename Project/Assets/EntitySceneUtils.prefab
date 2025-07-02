@@ -292,8 +292,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f27965b24b2f2dd4cb62f42bba606a90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerupPrefabs:
-  - {fileID: 0}
 --- !u!1001 &1283778317356557561
 PrefabInstance:
   m_ObjectHideFlags: 0

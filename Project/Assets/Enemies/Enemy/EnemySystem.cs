@@ -61,9 +61,15 @@ public partial class EnemySystem : SystemBase
                     Scale = 1
                 });
 
-                if (UnityEngine.Random.Range(0, 30) < 2)
+                if (UnityEngine.Random.Range(0, 100) < 3)
                 {
-
+                    Entity cardEntity = ecb.Instantiate(damageProperties.cardPickup);
+                    ecb.SetComponent(cardEntity, new LocalTransform
+                    {
+                        Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
+                        Rotation = quaternion.identity,
+                        Scale = 100
+                    });
                     
                 }
                 
@@ -100,6 +106,7 @@ public partial struct EnemyTriggerSystem : ISystem
         var entityManager = state.EntityManager;
 
         var processedEnemies = new NativeHashSet<Entity>(16, Allocator.Temp);
+        var processedEnemyExplosions = new NativeHashSet<ulong>(16, Allocator.Temp);
 
         foreach (var triggerEvent in sim.TriggerEvents)
         {
@@ -126,7 +133,8 @@ public partial struct EnemyTriggerSystem : ISystem
 
             void ProcessEnemyExplosion(Entity enemy, Entity explosion)
             {
-                if (!processedEnemies.Add(enemy))
+                ulong pairKey = ((ulong)enemy.Index << 32) | (uint)explosion.Index;
+                if (!processedEnemyExplosions.Add(pairKey))
                     return;
 
                 // Apply damage or destroy enemy
@@ -161,5 +169,6 @@ public partial struct EnemyTriggerSystem : ISystem
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
         processedEnemies.Dispose();
+        processedEnemyExplosions.Dispose();
     }
 }

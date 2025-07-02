@@ -23,7 +23,7 @@ public partial class MainSpawningSystem : SystemBase
             // BALANCING: Score based progression curve
             try
             {
-                mainSpawning.cooldown = 5 / (score / 25) + 0.5f + UnityEngine.Random.Range(0f, mainSpawning.cooldownVar);
+                mainSpawning.cooldown = 5 / (score / 30) + 0.5f + UnityEngine.Random.Range(0f, mainSpawning.cooldownVar);
             }
             catch (System.DivideByZeroException)
             {

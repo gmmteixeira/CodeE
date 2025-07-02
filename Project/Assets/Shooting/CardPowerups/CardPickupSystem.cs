@@ -33,7 +33,7 @@ public partial class CardPickupSystem : SystemBase
             if (shootingCooldown <= 0)
             {
                 float3 direction = math.normalize(new float3(playerPosition.x, 0, playerPosition.z) - new float3(localTransform.Position.x, 0, localTransform.Position.z));
-                localTransform.Position.xz += direction.xz * 6f * deltaTime;
+                localTransform.Position.xz += direction.xz * 10f * deltaTime;
             }
             if (localTransform.Position.y > 1) localTransform.Position.y -= 5 * deltaTime;
             else if (localTransform.Position.y < 1) localTransform.Position.y = 1;
@@ -52,6 +52,17 @@ public partial struct PowerupTriggerSystem : ISystem
         state.Dependency.Complete();
 
         var simSingleton = SystemAPI.GetSingleton<SimulationSingleton>();
+        WeaponProperties weaponProperties;
+        if (SystemAPI.HasSingleton<WeaponProperties>())
+        {
+            weaponProperties = SystemAPI.GetSingleton<WeaponProperties>();
+        } else return;
+        int score = 0;
+        if (SystemAPI.HasSingleton<GameComponentData>())
+        {
+            score = SystemAPI.GetSingleton<GameComponentData>().score;
+        } else return;
+
         var sim = simSingleton.AsSimulation();
 
         var ecb = new EntityCommandBuffer(Allocator.Temp);
@@ -70,22 +81,44 @@ public partial struct PowerupTriggerSystem : ISystem
             bool aIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityA);
             bool bIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityB);
 
-            void ProcessCardHit(Entity card, Entity player)
+            void ProcessCardHit(Entity card)
             {
                 if (!processedEnemies.Add(card))
                     return;
 
                 ecb.DestroyEntity(card);
+                if ((weaponProperties.powerupLevel < 1 || weaponProperties.powerupDrain > 10f) && weaponProperties.powerupLevel < 3)
+                {
+                    weaponProperties.powerupLevel += 1;
+                    weaponProperties.powerupDrain = 10f;
+                }
+                else if (weaponProperties.powerupLevel == 3 && weaponProperties.powerupDrain > 10f)
+                {
+                    weaponProperties.powerupDrain = 20f;
+                }
+                else
+                {
+                    weaponProperties.powerupDrain = 20f;
+                }
             }
 
             if (aIsCard && bIsPlayer)
-            {
-                ProcessCardHit(entityA, entityB);
-            }
-            else if (bIsCard && aIsPlayer)
-            {
-                ProcessCardHit(entityB, entityA);
-            }
+                {
+                    ProcessCardHit(entityA);
+                }
+                else if (bIsCard && aIsPlayer)
+                {
+                    ProcessCardHit(entityB);
+                }
+        }
+        
+        if (SystemAPI.HasSingleton<GameComponentData>())
+        {
+            SystemAPI.SetSingleton(new GameComponentData { score = score });
+        }
+        if (SystemAPI.HasSingleton<WeaponProperties>())
+        {
+            SystemAPI.SetSingleton(weaponProperties);
         }
 
         ecb.Playback(state.EntityManager);

@@ -19,5 +19,4 @@ public class GameSingleton : MonoBehaviour
 public struct GameComponentData : IComponentData
 {
     public int score;
-
 }

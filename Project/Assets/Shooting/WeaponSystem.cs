@@ -53,6 +53,16 @@ public partial class ShootingSystem : SystemBase
         var weaponProps = EntityManager.GetComponentData<WeaponProperties>(weaponEntity);
 
         weaponProps.cooldownTimer -= deltaTime;
+        if (weaponProps.powerupDrain > 0f && weaponProps.powerupLevel > 0)
+        {
+            weaponProps.powerupDrain -= 0.5f *deltaTime * (0.5f + weaponProps.powerupLevel * 0.5f);
+        }
+        if (weaponProps.powerupDrain <= 0f && weaponProps.powerupLevel > 0)
+        {
+            weaponProps.powerupLevel -= 1;
+            weaponProps.powerupDrain = 20f;
+        }
+        weaponProps.powerupDrain -= deltaTime * (0.5f + weaponProps.powerupLevel * 0.5f);
         bool fired = false;
         if (shootInput != 0 && weaponProps.cooldownTimer <= 0f && playerData.isAlive)
         {

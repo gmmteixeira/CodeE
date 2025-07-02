@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public class HandMovement : MonoBehaviour
 {
     public GameObject Player;
+    public Material handMaterial;
     private InputAction camControl;
     private Vector2 look;
     private new Rigidbody rigidbody;
@@ -58,6 +59,19 @@ public class HandMovement : MonoBehaviour
                     {
                         transform.position -= Camera.main.transform.rotation * new Vector3(0, 0f, 0.005f);
                     }
+                }
+                if (entityManager.Exists(entityManager.CreateEntityQuery(typeof(WeaponProperties)).GetSingletonEntity()))
+                {
+                    var weaponProps = entityManager.CreateEntityQuery(typeof(WeaponProperties)).GetSingleton<WeaponProperties>();
+                    int level = weaponProps.powerupLevel;
+                    transform.position += new Vector3
+                    (
+                        UnityEngine.Random.Range(-0.001f, 0.001f) * Mathf.Pow(level, 2),
+                        UnityEngine.Random.Range(-0.001f, 0.001f) * Mathf.Pow(level, 2),
+                        UnityEngine.Random.Range(-0.001f, 0.001f) * Mathf.Pow(level, 2)
+
+                    );
+                    handMaterial.SetFloat("_Level", level);
                 }
             }
             catch (Exception)

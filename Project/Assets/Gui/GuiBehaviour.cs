@@ -5,6 +5,7 @@ using TMPro;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class GuiBehaviour : MonoBehaviour
 {
@@ -13,9 +14,15 @@ public class GuiBehaviour : MonoBehaviour
     public TextMeshProUGUI highScore;
     public TextMeshProUGUI endScore;
     public TextMeshProUGUI restartTip;
+    
+    public Image powerupImage;
+    public Sprite[] powerupSprites;
+    public Image powerupImageMask;
+    public Image powerupImageBG;
     public GameObject hand;
     public AudioMixer audioMixer;
     private GameData gameData;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -84,8 +91,7 @@ public class GuiBehaviour : MonoBehaviour
         PlayerEvents.OnPlayerDeath -= OnPlayerDeath;
     }
     void Update()
-    {  
-        
+    {
         var world = World.DefaultGameObjectInjectionWorld;
         if (world != null)
         {
@@ -97,12 +103,43 @@ public class GuiBehaviour : MonoBehaviour
                     var gameData = entityManager.CreateEntityQuery(typeof(GameComponentData)).GetSingleton<GameComponentData>();
                     score.text = gameData.score.ToString();
                 }
+                if (entityManager.Exists(entityManager.CreateEntityQuery(typeof(WeaponProperties)).GetSingletonEntity()))
+                {
+                    var weaponProperties = entityManager.CreateEntityQuery(typeof(WeaponProperties)).GetSingleton<WeaponProperties>();
+                    powerupImage.sprite = powerupSprites[weaponProperties.powerupLevel];
+                    if (weaponProperties.powerupLevel == 0)
+                    {
+                        powerupImageMask.fillAmount = 0f;
+                    }
+                    else
+                    {
+                        powerupImageMask.fillAmount = weaponProperties.powerupDrain / 20f;
+                    }
+                    if (weaponProperties.powerupDrain > 10f)
+                    {
+                        if (weaponProperties.powerupLevel == 3)
+                        {
+                            powerupImageMask.color = new Color(1f, 0.7f, 0f, 1f);
+                        }
+                        else
+                        {
+                            powerupImageMask.color = new Color(1f, 1f, 1f, 1f);
+                        }
+                        
+                    }
+                    else
+                    {
+                        powerupImageMask.color = new Color(1f, 0f, 0f, 1f);
+                    }
+                    
+                }
             }
             catch (System.Exception)
             {
                 score.text = 0.ToString();
             }
         }
+        
     }
 
 }
