@@ -172,12 +172,56 @@ PrefabInstance:
       value: EntitySceneUtils
       objectReference: {fileID: 0}
     - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl0Damage
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl0Spread
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl1Spread
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl2Spread
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl3Spread
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl0Cooldown
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl1Cooldown
+      value: 0.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl2Cooldown
+      value: 0.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
       propertyPath: powerupLevel
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl0Explosion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: projectileHit
+      value: 
+      objectReference: {fileID: 4983027788994654603, guid: 04ed043b9b3522942af1fe72772c9ae2, type: 3}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
       propertyPath: lvl0ProjectileCount
-      value: 4
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: lvl1ProjectileCount
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -8,6 +8,7 @@ public class ProjectileAuthoring : MonoBehaviour
     public float damage;
     public float explosion;
     public GameObject explosionPrefab;
+    public GameObject projectileHit;
 
     private class Baker : Baker<ProjectileAuthoring>
     {
@@ -19,9 +20,10 @@ public class ProjectileAuthoring : MonoBehaviour
 }
 
 public struct ProjectileFlightProperties : IComponentData {public float distanceLimit;}
-public struct ProjectileDamageProperties : IComponentData 
+public struct ProjectileDamageProperties : IComponentData
 {
     public float damage;
     public float explosion;
     public Entity explosionPrefab;
+    public Entity projectileHit;
 }

@@ -169,10 +169,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e517629a320075241b437da37ee820a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aceleration: 6
+  aceleration: 7
   speed: 10
   jumpForce: 4
-  jumpBoost: 3
+  jumpBoost: 4
   deathEffectFeature: {fileID: 7361141111269296339, guid: f288ae1f4751b564a96ac7587541f7a2, type: 2}
   physicsMaterial: {fileID: 13400000, guid: 8f01197695588314393124b15c0c905d, type: 2}
   targetFriction: 0

@@ -8,7 +8,8 @@ public class ExplosionAuthoring : MonoBehaviour
         public override void Bake(ExplosionAuthoring authoring)
         {
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent(entity, new Expiration {timeToLive = 2});
+            AddComponent(entity, new Expiration { timeToLive = 2 });
+            AddComponent(entity, new JustSpawnedExplosionTag());
         }
     }
 }
@@ -17,3 +18,4 @@ public struct ExplosionProperties : IComponentData
 {
     public float damage;
 }
+public struct JustSpawnedExplosionTag : IComponentData {}

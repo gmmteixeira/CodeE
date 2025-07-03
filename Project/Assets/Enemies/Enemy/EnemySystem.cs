@@ -61,7 +61,7 @@ public partial class EnemySystem : SystemBase
                     Scale = 1
                 });
 
-                if (UnityEngine.Random.Range(0, 100) < 3)
+                if (UnityEngine.Random.Range(0, 100) < 5)
                 {
                     Entity cardEntity = ecb.Instantiate(damageProperties.cardPickup);
                     ecb.SetComponent(cardEntity, new LocalTransform
@@ -106,7 +106,6 @@ public partial struct EnemyTriggerSystem : ISystem
         var entityManager = state.EntityManager;
 
         var processedEnemies = new NativeHashSet<Entity>(16, Allocator.Temp);
-        var processedEnemyExplosions = new NativeHashSet<ulong>(16, Allocator.Temp);
 
         foreach (var triggerEvent in sim.TriggerEvents)
         {
@@ -117,8 +116,6 @@ public partial struct EnemyTriggerSystem : ISystem
             bool bIsEnemy = SystemAPI.HasComponent<HomingBoidProperties>(entityB);
             bool aIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityA);
             bool bIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityB);
-            bool aIsExplosion = SystemAPI.HasComponent<ExplosionProperties>(entityA);
-            bool bIsExplosion = SystemAPI.HasComponent<ExplosionProperties>(entityB);
 
             void ProcessEnemyHit(Entity enemy, Entity player)
             {
@@ -131,22 +128,6 @@ public partial struct EnemyTriggerSystem : ISystem
                 }
             }
 
-            void ProcessEnemyExplosion(Entity enemy, Entity explosion)
-            {
-                ulong pairKey = ((ulong)enemy.Index << 32) | (uint)explosion.Index;
-                if (!processedEnemyExplosions.Add(pairKey))
-                    return;
-
-                // Apply damage or destroy enemy
-                if (entityManager.HasComponent<HealthProperties>(enemy))
-                {
-                    var health = entityManager.GetComponentData<HealthProperties>(enemy);
-                    var explosionProps = entityManager.GetComponentData<ExplosionProperties>(explosion);
-                    health.health -= (int)explosionProps.damage;
-                    ecb.SetComponent(enemy, health);
-                }
-            }
-
             if (aIsEnemy && bIsPlayer)
             {
                 ProcessEnemyHit(entityA, entityB);
@@ -155,20 +136,10 @@ public partial struct EnemyTriggerSystem : ISystem
             {
                 ProcessEnemyHit(entityB, entityA);
             }
-            // Handle enemy-explosion collision
-            else if (aIsEnemy && bIsExplosion)
-            {
-                ProcessEnemyExplosion(entityA, entityB);
-            }
-            else if (bIsEnemy && aIsExplosion)
-            {
-                ProcessEnemyExplosion(entityB, entityA);
-            }
         }
 
         ecb.Playback(state.EntityManager);
         ecb.Dispose();
         processedEnemies.Dispose();
-        processedEnemyExplosions.Dispose();
     }
 }

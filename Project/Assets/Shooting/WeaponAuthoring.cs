@@ -9,6 +9,7 @@ public class WeaponAuthoring : MonoBehaviour
     public int powerupLevel;
     public GameObject soundEffect;
     public GameObject explosionPrefab;
+    public GameObject projectileHit;
 
     [Header("No Powerup")]
     public float lvl0Cooldown;
@@ -74,7 +75,8 @@ public class WeaponAuthoring : MonoBehaviour
                 powerupDrain = 0f,
                 speed = authoring.speed,
                 soundEffect = GetEntity(authoring.soundEffect, TransformUsageFlags.Dynamic),
-                explosionPrefab = GetEntity(authoring.explosionPrefab, TransformUsageFlags.Dynamic)
+                explosionPrefab = GetEntity(authoring.explosionPrefab, TransformUsageFlags.Dynamic),
+                projectileHit = GetEntity(authoring.projectileHit, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -84,6 +86,7 @@ public struct WeaponProperties : IComponentData
 {
     public Entity projectile;
     public int powerupLevel;
+    public Entity projectileHit;
 
     // No powerup
     public float lvl0Cooldown;

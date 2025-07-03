@@ -143,8 +143,8 @@ public partial class ShootingSystem : SystemBase
                 {
                     damage = damage,
                     explosion = explosion,
-                    explosionPrefab = weaponProps.explosionPrefab
-                    
+                    explosionPrefab = weaponProps.explosionPrefab,
+                    projectileHit = weaponProps.projectileHit
                 });
                 ecb.SetComponent(spawned, new PhysicsVelocity
                 {

@@ -4910,6 +4910,7 @@ GameObject:
   m_Component:
   - component: {fileID: 643584579690108990}
   - component: {fileID: -485054404448595123}
+  - component: {fileID: -6720271110823838804}
   m_Layer: 0
   m_Name: ShootEffect
   m_TagString: Untagged
@@ -5030,3 +5031,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-6720271110823838804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5622073964022900289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d279dad67adcd6a4ab4043ee59437e7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToLive: 0.5

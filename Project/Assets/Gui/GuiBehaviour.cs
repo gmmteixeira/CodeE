@@ -42,6 +42,7 @@ public class GuiBehaviour : MonoBehaviour
         endScore.gameObject.SetActive(false);
         restartTip.gameObject.SetActive(false);
         score.gameObject.SetActive(true);
+        powerupImage.gameObject.SetActive(true);
         hand.SetActive(true);
         audioMixer.SetFloat("Volume", 0f);
     }
@@ -76,10 +77,12 @@ public class GuiBehaviour : MonoBehaviour
                 Debug.LogError("Error while trying to save game data: " + Path.Combine(Application.persistentDataPath, "gameData.dat"));
             }
         }
+        Time.timeScale *= 0.1f;
         highScore.gameObject.SetActive(true);
         endScore.gameObject.SetActive(true);
         score.gameObject.SetActive(false);
         restartTip.gameObject.SetActive(true);
+        powerupImageBG.gameObject.SetActive(false);
         endScore.text = score.text;
         highScore.text = "High Score: " + gameData.highscore.ToString();
         hand.SetActive(false);
@@ -92,6 +95,17 @@ public class GuiBehaviour : MonoBehaviour
     }
     void Update()
     {
+        if (Time.timeScale < 1f)
+        {
+            Time.timeScale += Time.unscaledDeltaTime;
+            if (Time.timeScale > 1f)
+            {
+                Time.timeScale = 1f;
+            }
+        }
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        audioMixer.SetFloat("Pitch", Time.timeScale);
+
         var world = World.DefaultGameObjectInjectionWorld;
         if (world != null)
         {

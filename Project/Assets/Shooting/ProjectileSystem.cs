@@ -77,39 +77,45 @@ public partial struct ProjectileTriggerSystem : ISystem
                 if (currentHealth > 0)
                 {
                     var damagePropeties = entityManager.GetComponentData<ProjectileDamageProperties>(projectile);
-                    float damage = 0;
                     var localTransform =  entityManager.GetComponentData<LocalTransform>(projectile);
-                    if (damagePropeties.explosion > 1) damage = damagePropeties.damage;
-                    currentHealth -= (int)damagePropeties.damage;
-                    updatedHealths[target] = currentHealth;
-
                     var healthData = entityManager.GetComponentData<HealthProperties>(target);
-                    healthData.health = currentHealth;
-                    ecb.SetComponent(target, healthData);
 
-                    if (currentHealth <= 0)
+                    ecb.DestroyEntity(projectile);
+                    if (damagePropeties.explosion > 1)
                     {
-                        ecb.DestroyEntity(projectile);
-                        if (damagePropeties.explosion > 1)
+                        Entity explosion = ecb.Instantiate(damagePropeties.explosionPrefab);
+                        ecb.AddComponent(explosion, new ExplosionProperties
                         {
-                            Entity explosion = ecb.Instantiate(damagePropeties.explosionPrefab);
-                            ecb.AddComponent(explosion, new ExplosionProperties
-                            {
-                                damage = damagePropeties.damage
-                            });
-                            ecb.SetComponent(explosion, new LocalTransform
-                            {
-                                Position = localTransform.Position,
-                                Rotation = localTransform.Rotation,
-                                Scale = damagePropeties.explosion
-                            });
-                        }
-                        Entity hit = ecb.Instantiate(healthData.hitEffect);
-                        ecb.AddComponent(hit, new Parent
+                            damage = damagePropeties.damage
+                        });
+                        ecb.SetComponent(explosion, new LocalTransform
                         {
-                            Value = target
+                            Position = localTransform.Position,
+                            Rotation = localTransform.Rotation,
+                            Scale = damagePropeties.explosion
                         });
                     }
+                    else
+                    {
+                        currentHealth -= (int)damagePropeties.damage;
+                        healthData.health = currentHealth;
+                        updatedHealths[target] = currentHealth;
+                        Entity hitEffect = ecb.Instantiate(damagePropeties.projectileHit);
+                        ecb.SetComponent(hitEffect, new LocalTransform
+                        {
+                            Position = localTransform.Position,
+                            Rotation = localTransform.Rotation,
+                            Scale = 1.0f
+                        });
+
+                    }
+                    ecb.SetComponent(target, healthData);
+
+                    Entity hit = ecb.Instantiate(healthData.hitEffect);
+                    ecb.AddComponent(hit, new Parent
+                    {
+                        Value = target
+                    });
                 }
             }
 
@@ -132,6 +138,15 @@ public partial struct ProjectileTriggerSystem : ISystem
                         Position = localTransform.Position,
                         Rotation = localTransform.Rotation,
                         Scale = damage.explosion
+                    });
+                } else
+                {
+                    Entity hitEffect = ecb.Instantiate(damage.projectileHit);
+                    ecb.SetComponent(hitEffect, new LocalTransform
+                    {
+                        Position = localTransform.Position,
+                        Rotation = localTransform.Rotation,
+                        Scale = 1.0f
                     });
                 }
                 ecb.DestroyEntity(projectile);

@@ -33,10 +33,10 @@ public partial class CardPickupSystem : SystemBase
             if (shootingCooldown <= 0)
             {
                 float3 direction = math.normalize(new float3(playerPosition.x, 0, playerPosition.z) - new float3(localTransform.Position.x, 0, localTransform.Position.z));
-                localTransform.Position.xz += direction.xz * 10f * deltaTime;
+                localTransform.Position.xz += direction.xz * (5 + 30f / (math.distance(localTransform.Position.xz, new float2(playerPosition.x, playerPosition.z))/2)) * deltaTime;
             }
-            if (localTransform.Position.y > 1) localTransform.Position.y -= 5 * deltaTime;
-            else if (localTransform.Position.y < 1) localTransform.Position.y = 1;
+            if (localTransform.Position.y > 1.2) localTransform.Position.y -= 5 * deltaTime;
+            else if (localTransform.Position.y < 1.2) localTransform.Position.y = 1.2f;
         })
         .ScheduleParallel();
     }
@@ -91,14 +91,18 @@ public partial struct PowerupTriggerSystem : ISystem
                 {
                     weaponProperties.powerupLevel += 1;
                     weaponProperties.powerupDrain = 10f;
+                    Time.timeScale *= 0.25f;
                 }
                 else if (weaponProperties.powerupLevel == 3 && weaponProperties.powerupDrain > 10f)
                 {
                     weaponProperties.powerupDrain = 20f;
+                    score += 1;
+                    Time.timeScale *= 0.75f;
                 }
                 else
                 {
                     weaponProperties.powerupDrain = 20f;
+                    Time.timeScale *= 0.5f;
                 }
             }
 
