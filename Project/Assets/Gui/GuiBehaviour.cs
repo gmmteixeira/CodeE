@@ -44,7 +44,7 @@ public class GuiBehaviour : MonoBehaviour
         score.gameObject.SetActive(true);
         powerupImage.gameObject.SetActive(true);
         hand.SetActive(true);
-        audioMixer.SetFloat("Volume", 0f);
+        audioMixer.SetFloat("Volume", Mathf.Log10(Mathf.Clamp(PlayerPrefs.GetFloat("Volume", 1f), 0.0001f, 1f)) * 20f);
     }
     private void Awake()
     {

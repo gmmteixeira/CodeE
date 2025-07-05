@@ -216,6 +216,22 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4983027788994654603, guid: 04ed043b9b3522942af1fe72772c9ae2, type: 3}
     - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: shootEffectlvl0
+      value: 
+      objectReference: {fileID: 5622073964022900289, guid: f79d410b1270b64418999fa6cebb0d10, type: 3}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: shootEffectlvl1
+      value: 
+      objectReference: {fileID: 5622073964022900289, guid: 912aa3193dbedbe4d9671144ef32a32b, type: 3}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: shootEffectlvl2
+      value: 
+      objectReference: {fileID: 5622073964022900289, guid: 722ca93447ee7de4dbb3870dba0b390f, type: 3}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: shootEffectlvl3
+      value: 
+      objectReference: {fileID: 5622073964022900289, guid: 22b5068d774f184448b9a67422d330c4, type: 3}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
       propertyPath: lvl0ProjectileCount
       value: 6
       objectReference: {fileID: 0}

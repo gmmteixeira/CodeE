@@ -42,7 +42,7 @@ public class HandMovement : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position, transform.parent.position + Camera.main.transform.rotation * new Vector3(0, -0.8f, 0.2f) - rigidbody.linearVelocity * 0.02f, Time.deltaTime * 10);
 
-        transform.localRotation = Quaternion.Lerp(transform.localRotation, quaternion.Euler(new Vector3(-look.y * 0.01f - 1.7f, 0, look.x * 0.01f)), Time.deltaTime * 10);
+        transform.localRotation = Quaternion.Lerp(transform.localRotation, quaternion.Euler(new Vector3(-look.y * 0.01f - 1.5f, 0, look.x * 0.01f)), Time.deltaTime * 10);
 
         var world = World.DefaultGameObjectInjectionWorld;
         

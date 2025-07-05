@@ -6,8 +6,8 @@ AudioContainerElement:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shoot_{2537949469902347593}
-  m_AudioClip: {fileID: 8300000, guid: ba3d3f3af7d74e84db2f9d62c1464047, type: 3}
+  m_Name: Exlosion_{2537949469902347593}
+  m_AudioClip: {fileID: 8300000, guid: cab064810d1161142b22c0e76aad7217, type: 3}
   m_Volume: 0
   m_Enabled: 1
 --- !u!1307931743 &6418180475301049370
@@ -16,7 +16,7 @@ AudioRandomContainer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shoot
+  m_Name: ExplosionSound
   m_Volume: 0
   m_Pitch: 0
   m_AutomaticTriggerTime: 0
@@ -28,7 +28,7 @@ AudioRandomContainer:
   m_Elements:
   - {fileID: 2537949469902347593}
   m_AvoidRepeatingLast: 0
-  m_PlaybackMode: 0
+  m_PlaybackMode: 2
   m_TriggerMode: 1
   m_AutomaticTriggerMode: 1
   m_LoopMode: 2

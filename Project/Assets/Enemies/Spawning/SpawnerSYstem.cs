@@ -8,6 +8,12 @@ public partial class SpawnerSystem : SystemBase
 {
     protected override void OnUpdate()
     {
+        PlayerSingletonData playerData = default;
+        bool hasPlayerData = SystemAPI.HasSingleton<PlayerSingletonData>();
+        if (hasPlayerData)
+        {
+            playerData = SystemAPI.GetSingleton<PlayerSingletonData>();
+        }
         float deltaTime = SystemAPI.Time.DeltaTime;
         var ecb = new EntityCommandBuffer(Allocator.TempJob);
         Entities.WithAll<SpawnerProperties>().ForEach((Entity entity, ref SpawnerProperties spawner, ref LocalTransform localTransform) =>
@@ -15,7 +21,7 @@ public partial class SpawnerSystem : SystemBase
 
             spawner.cooldown -= deltaTime;
             
-            if (spawner.cooldown <= 0f)
+            if (spawner.cooldown <= 0f && playerData.isAlive)
             {
                 spawner.cooldown = spawner.cooldownVarMin + UnityEngine.Random.Range(0f, spawner.cooldownVarMax);
 

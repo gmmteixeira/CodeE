@@ -402,7 +402,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8344439570979220853, guid: 592ed3a6c52c30c48a13e6bca4652312, type: 3}
       propertyPath: powerupLevel
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8344439570979220853, guid: 592ed3a6c52c30c48a13e6bca4652312, type: 3}
       propertyPath: lvl2Explosion
@@ -412,6 +412,10 @@ PrefabInstance:
       propertyPath: lvl3Explosion
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 8344439570979220853, guid: 592ed3a6c52c30c48a13e6bca4652312, type: 3}
+      propertyPath: projectileHit
+      value: 
+      objectReference: {fileID: 4983027788994654603, guid: 04ed043b9b3522942af1fe72772c9ae2, type: 3}
     - target: {fileID: 8344439570979220853, guid: 592ed3a6c52c30c48a13e6bca4652312, type: 3}
       propertyPath: cooldownAmount
       value: 0.3

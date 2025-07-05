@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class FPSCam : MonoBehaviour
 {
-    public float sensitivity = 3f;
+    public float sensitivity;
     private float xRotation = 0f;
     private InputAction camControl;
     private Vector2 look;
@@ -15,6 +15,7 @@ public class FPSCam : MonoBehaviour
     void Start()
     {
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        sensitivity = PlayerPrefs.GetFloat("Sensitivity", 0.5f)/1.5f;
 
         Cursor.lockState = CursorLockMode.Locked;
         camControl = InputSystem.actions.FindAction("look");

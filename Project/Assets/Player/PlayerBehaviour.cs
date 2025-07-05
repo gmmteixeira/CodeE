@@ -16,11 +16,11 @@ public class PlayerBehaviour : MonoBehaviour
     public float targetFriction;
     private InputAction movementAction;
     private InputAction jumpAction;
+    private InputAction quitAction;
     private Rigidbody rb;
     private AudioSource audioSource;
     private Quaternion yaw;
     private Vector2 move;
-    private float jump;
     private bool isAlive = true;
     public bool floored = false;
 
@@ -91,6 +91,7 @@ public class PlayerBehaviour : MonoBehaviour
 
                         movementAction = InputSystem.actions.FindAction("move");
                         jumpAction = InputSystem.actions.FindAction("jump");
+                        quitAction = InputSystem.actions.FindAction("quit");
                         move = movementAction.ReadValue<Vector2>();
 
                         // Use button press interaction for jump
@@ -100,6 +101,10 @@ public class PlayerBehaviour : MonoBehaviour
                             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
                             rb.AddForce(yaw * new Vector3(move.x, 0, move.y) * jumpBoost, ForceMode.Impulse);
                             physicsMaterial.dynamicFriction = 0f;
+                        }
+                        if (quitAction.triggered)
+                        {
+                            SceneManager.LoadScene("MainMenu");
                         }
 
                         if (localTransform.Position.y < -1f) playerData.isAlive = false;

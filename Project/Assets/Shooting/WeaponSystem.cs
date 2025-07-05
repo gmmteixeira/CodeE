@@ -71,6 +71,7 @@ public partial class ShootingSystem : SystemBase
             float spread = 1;
             int damage = 1;
             float explosion = 0;
+            Entity effect = Entity.Null;
 
             switch (weaponProps.powerupLevel)
             {
@@ -80,6 +81,7 @@ public partial class ShootingSystem : SystemBase
                     spread = weaponProps.lvl0Spread;
                     damage = weaponProps.lvl0Damage;
                     explosion = weaponProps.lvl0Explosion;
+                    effect = weaponProps.shootEffectlvl0;
                     break;
                 case 1:
                     cooldown = weaponProps.lvl1Cooldown;
@@ -87,6 +89,7 @@ public partial class ShootingSystem : SystemBase
                     spread = weaponProps.lvl1Spread;
                     damage = weaponProps.lvl1Damage;
                     explosion = weaponProps.lvl1Explosion;
+                    effect = weaponProps.shootEffectlvl1;
                     break;
                 case 2:
                     cooldown = weaponProps.lvl2Cooldown;
@@ -94,6 +97,7 @@ public partial class ShootingSystem : SystemBase
                     spread = weaponProps.lvl2Spread;
                     damage = weaponProps.lvl2Damage;
                     explosion = weaponProps.lvl2Explosion;
+                    effect = weaponProps.shootEffectlvl2;
                     break;
                 case 3:
                     cooldown = weaponProps.lvl3Cooldown;
@@ -101,22 +105,27 @@ public partial class ShootingSystem : SystemBase
                     spread = weaponProps.lvl3Spread;
                     damage = weaponProps.lvl3Damage;
                     explosion = weaponProps.lvl3Explosion;
+                    effect = weaponProps.shootEffectlvl3;
                     break;
                 default: break;
             }
 
             weaponProps.cooldownTimer = cooldown;
-            Entity sound = ecb.Instantiate(weaponProps.soundEffect);
-            ecb.SetComponent(sound, new LocalTransform
+            Entity effectInstance = Entity.Null;
+            if (effect != Entity.Null)
             {
-                Position = spawnPosition,
-                Rotation = spawnRotation,
-                Scale = 1.0f
-            });
-            ecb.AddComponent(sound, new Expiration
-            {
-                timeToLive = 1.5f
-            });
+                effectInstance = ecb.Instantiate(effect);
+                ecb.SetComponent(effectInstance, new LocalTransform
+                {
+                    Position = spawnPosition,
+                    Rotation = spawnRotation,
+                    Scale = 1.0f
+                });
+                ecb.AddComponent(effectInstance, new Expiration
+                {
+                    timeToLive = 1.5f
+                });
+            }
             for (int i = 0; i < projectileCount; i++)
             {
                 // Biased circular spread (more projectiles near center)
