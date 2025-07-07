@@ -208,6 +208,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: topOffEffect
+      value: 
+      objectReference: {fileID: 7246283506177107422, guid: 3a419946636256142936b5762ad4fcce, type: 3}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
       propertyPath: lvl0Explosion
       value: 0
       objectReference: {fileID: 0}

@@ -14,13 +14,11 @@ public class GuiBehaviour : MonoBehaviour
     public TextMeshProUGUI highScore;
     public TextMeshProUGUI endScore;
     public TextMeshProUGUI restartTip;
-    
     public Image powerupImage;
     public Sprite[] powerupSprites;
     public Image powerupImageMask;
     public Image powerupImageBG;
     public GameObject hand;
-    public AudioMixer audioMixer;
     private GameData gameData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,7 +42,7 @@ public class GuiBehaviour : MonoBehaviour
         score.gameObject.SetActive(true);
         powerupImage.gameObject.SetActive(true);
         hand.SetActive(true);
-        audioMixer.SetFloat("Volume", Mathf.Log10(Mathf.Clamp(PlayerPrefs.GetFloat("Volume", 1f), 0.0001f, 1f)) * 20f);
+        Camera.main.fieldOfView = PlayerPrefs.GetFloat("FOV");
     }
     private void Awake()
     {
@@ -77,7 +75,6 @@ public class GuiBehaviour : MonoBehaviour
                 Debug.LogError("Error while trying to save game data: " + Path.Combine(Application.persistentDataPath, "gameData.dat"));
             }
         }
-        Time.timeScale *= 0.1f;
         highScore.gameObject.SetActive(true);
         endScore.gameObject.SetActive(true);
         score.gameObject.SetActive(false);
@@ -86,7 +83,6 @@ public class GuiBehaviour : MonoBehaviour
         endScore.text = score.text;
         highScore.text = "High Score: " + gameData.highscore.ToString();
         hand.SetActive(false);
-        audioMixer.SetFloat("Volume", -80f);
     }
 
     private void OnDisable()
@@ -95,16 +91,6 @@ public class GuiBehaviour : MonoBehaviour
     }
     void Update()
     {
-        if (Time.timeScale < 1f)
-        {
-            Time.timeScale += Time.unscaledDeltaTime;
-            if (Time.timeScale > 1f)
-            {
-                Time.timeScale = 1f;
-            }
-        }
-        Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        audioMixer.SetFloat("Pitch", Time.timeScale);
 
         var world = World.DefaultGameObjectInjectionWorld;
         if (world != null)
@@ -137,13 +123,13 @@ public class GuiBehaviour : MonoBehaviour
                         }
                         else
                         {
-                            powerupImageMask.color = new Color(1f, 1f, 1f, 1f);
+                            powerupImageMask.color = new Color(0f, 1f, 1f, 1f);
                         }
                         
                     }
                     else
                     {
-                        powerupImageMask.color = new Color(1f, 0f, 0f, 1f);
+                        powerupImageMask.color = new Color(1f, 0f, 0.3f, 1f);
                     }
                     
                 }

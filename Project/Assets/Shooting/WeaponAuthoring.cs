@@ -9,6 +9,7 @@ public class WeaponAuthoring : MonoBehaviour
     public int powerupLevel;
     public GameObject explosionPrefab;
     public GameObject projectileHit;
+    public GameObject topOffEffect;
 
     [Header("No Powerup")]
     public float lvl0Cooldown;
@@ -82,7 +83,8 @@ public class WeaponAuthoring : MonoBehaviour
                 powerupDrain = 0f,
                 speed = authoring.speed,
                 explosionPrefab = GetEntity(authoring.explosionPrefab, TransformUsageFlags.Dynamic),
-                projectileHit = GetEntity(authoring.projectileHit, TransformUsageFlags.Dynamic)
+                projectileHit = GetEntity(authoring.projectileHit, TransformUsageFlags.Dynamic),
+                topOffEffect = GetEntity(authoring.topOffEffect, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -93,6 +95,7 @@ public struct WeaponProperties : IComponentData
     public Entity projectile;
     public int powerupLevel;
     public Entity projectileHit;
+    public Entity topOffEffect;
 
     // No powerup
     public float lvl0Cooldown;

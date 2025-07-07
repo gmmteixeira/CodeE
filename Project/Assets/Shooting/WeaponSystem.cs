@@ -55,7 +55,7 @@ public partial class ShootingSystem : SystemBase
         weaponProps.cooldownTimer -= deltaTime;
         if (weaponProps.powerupDrain > 0f && weaponProps.powerupLevel > 0)
         {
-            weaponProps.powerupDrain -= 0.5f *deltaTime * (0.5f + weaponProps.powerupLevel * 0.5f);
+            weaponProps.powerupDrain -= 0.5f * deltaTime * (0.5f + weaponProps.powerupLevel * 0.5f);
         }
         if (weaponProps.powerupDrain <= 0f && weaponProps.powerupLevel > 0)
         {

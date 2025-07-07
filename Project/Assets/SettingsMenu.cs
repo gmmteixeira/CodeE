@@ -1,6 +1,8 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class SettingsMenu : MonoBehaviour
@@ -9,8 +11,14 @@ public class SettingsMenu : MonoBehaviour
     public Canvas mainMenuCanvas;
     public Slider sensitivitySlider;
     public TMP_InputField sensitivityInputField;
-    public Slider volumeSlider;
-    public TMP_InputField volumeInputField;
+    public Slider fovSlider;
+    public TMP_InputField fovInputField;
+    public VolumeProfile volumeProfile;
+    public Toggle lensDistortionToggle;
+    public Toggle lensFlareToggle;
+    public Toggle bloomToggle;
+    public Toggle psxToggle;
+    public ScriptableRendererFeature psx;
 
     void Start()
     {
@@ -22,60 +30,86 @@ public class SettingsMenu : MonoBehaviour
         mainMenuCanvas.gameObject.SetActive(true);
     }
 
-    public void SetSensitivityBySlider()
+    public void SetSensitivityBySlider(float sensitivity)
     {
-        float sensitivity = sensitivitySlider.value;
         sensitivityInputField.text = sensitivity.ToString("F2");
         PlayerPrefs.SetFloat("Sensitivity", sensitivity);
     }
 
-    public void SetSensitivityByInputField()
+    public void SetSensitivityByInputField(string sensitivity)
     {
-        float sensitivity;
-        if (float.TryParse(sensitivityInputField.text, out sensitivity))
+        if (float.TryParse(sensitivity, out float value))
         {
-            sensitivitySlider.value = sensitivity;
-            PlayerPrefs.SetFloat("Sensitivity", sensitivity);
+            sensitivitySlider.value = value;
+            PlayerPrefs.SetFloat("Sensitivity", value);
         }
         else
         {
             Debug.LogWarning("Invalid sensitivity value entered.");
         }
-        
     }
-
-    public void SetVolumeBySlider()
+    public void SetFOVBySlider(float fov)
     {
-        float volume = volumeSlider.value;
-        volumeInputField.text = volume.ToString("F2");
-        PlayerPrefs.SetFloat("Volume", volume);
-        audioMixer.SetFloat("Volume", Mathf.Log10(Mathf.Clamp(PlayerPrefs.GetFloat("Volume", 1f), 0.0001f, 1f)) * 20f);
+        PlayerPrefs.SetFloat("FOV", 80 + fov * 80);
+        fovInputField.text = PlayerPrefs.GetFloat("FOV").ToString("F2");
     }
-
-    public void SetVolumeByInputField()
+    public void SetFOVByInputField(string fov)
     {
-        float volume;
-        if (float.TryParse(volumeInputField.text, out volume))
+        if (float.TryParse(fov, out float value))
         {
-            volumeSlider.value = volume;
-            PlayerPrefs.SetFloat("Volume", volume);
-            audioMixer.SetFloat("Volume", Mathf.Log10(Mathf.Clamp(PlayerPrefs.GetFloat("Volume", 1f), 0.0001f, 1f)) * 20f);
+            fovSlider.value = (value - 80) / 80;
+            PlayerPrefs.SetFloat("FOV", value);
         }
         else
         {
-            Debug.LogWarning("Invalid volume value entered.");
+            Debug.LogWarning("Invalid FOV value entered.");
+        }
+    }
+    public void SetLensDistortion(bool enabled)
+    {
+        PlayerPrefs.SetInt("LensDistortionEnabled", enabled ? 1 : 0);
+        if (volumeProfile.TryGet<LensDistortion>(out var lensDistortion))
+        {
+            lensDistortion.active = enabled;
+        }
+    }
+    public void SetLensFlare(bool enabled)
+    {
+        PlayerPrefs.SetInt("LensFlareEnabled", enabled ? 1 : 0);
+        if (volumeProfile.TryGet<ScreenSpaceLensFlare>(out var lensFlare))
+        {
+            lensFlare.active = enabled;
+        }
+    }
+    public void SetBloom(bool enabled)
+    {
+        PlayerPrefs.SetInt("BloomEnabled", enabled ? 1 : 0);
+        if (volumeProfile.TryGet<Bloom>(out var bloom))
+        {
+            bloom.active = enabled;
+        }
+    }
+    public void SetPSX(bool enabled)
+    {
+        PlayerPrefs.SetInt("PSXEnabled", enabled ? 1 : 0);
+        if (psx != null)
+        {
+            psx.SetActive(enabled);
         }
     }
 
     private void LoadSettings()
     {
-        
+
         float sensitivity = PlayerPrefs.GetFloat("Sensitivity", 0.3f);
-        float volume = PlayerPrefs.GetFloat("Volume", 1f);
-        sensitivitySlider.value = sensitivity;
         sensitivityInputField.text = sensitivity.ToString("F2");
-        volumeSlider.value = volume;
-        volumeInputField.text = volume.ToString("F2");
-        audioMixer.SetFloat("Volume", -80 + PlayerPrefs.GetFloat("Volume", 1f) * 80f);
+        sensitivitySlider.value = sensitivity;
+        float fov = PlayerPrefs.GetFloat("FOV", 125f);
+        fovInputField.text = fov.ToString("F2");
+        fovSlider.value = (fov - 80) / 80;
+        lensDistortionToggle.isOn = PlayerPrefs.GetInt("LensDistortionEnabled", 1) == 1;
+        lensFlareToggle.isOn = PlayerPrefs.GetInt("LensFlareEnabled", 1) == 1;
+        bloomToggle.isOn = PlayerPrefs.GetInt("BloomEnabled", 1) == 1;
+        psxToggle.isOn = PlayerPrefs.GetInt("PSXEnabled", 1) == 1;
     }
 }

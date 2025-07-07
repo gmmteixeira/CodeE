@@ -50,7 +50,12 @@ public partial struct PowerupTriggerSystem : ISystem
     {
         // Ensure all dependencies (including physics jobs) are complete before accessing simulation data
         state.Dependency.Complete();
-
+        float3 playerPosition = float3.zero;
+        if (SystemAPI.HasSingleton<PlayerSingletonData>())
+        {
+            playerPosition = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<PlayerSingletonData>()).Position;
+        } else return;
+        float3 effectSpawnPosition = new float3(playerPosition.x, 0.5f, playerPosition.z);
         var simSingleton = SystemAPI.GetSingleton<SimulationSingleton>();
         WeaponProperties weaponProperties;
         if (SystemAPI.HasSingleton<WeaponProperties>())
@@ -86,23 +91,28 @@ public partial struct PowerupTriggerSystem : ISystem
                 if (!processedEnemies.Add(card))
                     return;
 
+                Entity effectEntity = ecb.Instantiate(weaponProperties.topOffEffect);
+                ecb.SetComponent(effectEntity, new LocalTransform
+                {
+                    Position = effectSpawnPosition,
+                    Rotation = quaternion.identity,
+                    Scale = 1f
+                });
                 ecb.DestroyEntity(card);
                 if ((weaponProperties.powerupLevel < 1 || weaponProperties.powerupDrain > 10f) && weaponProperties.powerupLevel < 3)
                 {
                     weaponProperties.powerupLevel += 1;
                     weaponProperties.powerupDrain = 10f;
-                    Time.timeScale *= 0.25f;
+
                 }
                 else if (weaponProperties.powerupLevel == 3 && weaponProperties.powerupDrain > 10f)
                 {
                     weaponProperties.powerupDrain = 20f;
                     score += 1;
-                    Time.timeScale *= 0.75f;
                 }
                 else
                 {
                     weaponProperties.powerupDrain = 20f;
-                    Time.timeScale *= 0.5f;
                 }
             }
 

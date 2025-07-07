@@ -14,12 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
   m_GUID: 881e1831c5480fc4a85fbcbf6aa22509
-  m_SerializeEntries:
-  - m_GUID: dfd98e115291ee24c8b4e073a040c7da
-    m_Address: SpaceAudioMixer
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 0c793a56c7e7c034e8cc04c1107e2f83, type: 2}
   m_SchemaSet:
