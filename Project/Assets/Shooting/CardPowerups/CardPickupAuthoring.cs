@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class CardPickupAuthoring : MonoBehaviour
 {
+    public GameObject explosionPrefab;
+    public float lifetime;
     private class Baker : Baker<CardPickupAuthoring>
     {
         public override void Bake(CardPickupAuthoring authoring)
@@ -10,13 +12,14 @@ public class CardPickupAuthoring : MonoBehaviour
             Entity entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new CardPickup
             {
-
+                Explosion = GetEntity(authoring.explosionPrefab, TransformUsageFlags.Dynamic),
+                lifetime = authoring.lifetime
             });
-            AddComponent(entity, new Expiration { timeToLive = 30 });
         }
     }
 }
 public struct CardPickup : IComponentData
 {
-
+    public Entity Explosion;
+    public float lifetime;
 }

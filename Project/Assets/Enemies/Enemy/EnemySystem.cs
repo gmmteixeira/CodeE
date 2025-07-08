@@ -61,7 +61,7 @@ public partial class EnemySystem : SystemBase
                     Scale = 1
                 });
 
-                if (UnityEngine.Random.Range(0, 100) < 5)
+                if (UnityEngine.Random.Range(0, 100) < damageProperties.dropChance)
                 {
                     Entity cardEntity = ecb.Instantiate(damageProperties.cardPickup);
                     ecb.SetComponent(cardEntity, new LocalTransform

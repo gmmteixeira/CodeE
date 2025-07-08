@@ -8,7 +8,7 @@ using Unity.Transforms;
 using UnityEngine;
 public partial class CardPickupSystem : SystemBase
 {
-    
+
     protected override void OnUpdate()
     {
         Vector3 playerPosition = Vector3.zero;
@@ -18,27 +18,48 @@ public partial class CardPickupSystem : SystemBase
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerSingletonData>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             playerPosition = playerTransform.Position;
-        } else return;
+        }
+        else return;
         float shootingCooldown = 0;
         if (SystemAPI.HasSingleton<WeaponProperties>())
         {
             shootingCooldown = SystemAPI.GetSingleton<WeaponProperties>().cooldownTimer;
         }
-        
+        var ecb = new EntityCommandBuffer(Allocator.TempJob);
         float deltaTime = SystemAPI.Time.DeltaTime;
-        Entities.ForEach((ref PhysicsMass mass, ref LocalTransform localTransform, in CardPickup cardPickup) =>
+        Entities.WithAll<CardPickup>().ForEach((Entity entity, ref PhysicsMass mass, ref LocalTransform localTransform, ref CardPickup cardPickup) =>
         {
             mass.InverseInertia = float3.zero;
+            if (cardPickup.lifetime > 0)
+            {
+                cardPickup.lifetime -= deltaTime;
+                if (cardPickup.lifetime <= 0)
+                {
+                    Entity explosion = ecb.Instantiate(cardPickup.Explosion);
+                    ecb.SetComponent(explosion, new LocalTransform
+                    {
+                        Position = localTransform.Position,
+                        Rotation = localTransform.Rotation,
+                        Scale = 10f
+                    });
+                    ecb.AddComponent(explosion, new ExplosionProperties
+                    {
+                        damage = 5,
+                    });
+                    ecb.DestroyEntity(entity);
+                }
+            }
             localTransform.Rotation = math.mul(localTransform.Rotation, quaternion.RotateY(math.radians(180 * deltaTime)));
             if (shootingCooldown <= 0)
             {
                 float3 direction = math.normalize(new float3(playerPosition.x, 0, playerPosition.z) - new float3(localTransform.Position.x, 0, localTransform.Position.z));
-                localTransform.Position.xz += direction.xz * (5 + 30f / (math.distance(localTransform.Position.xz, new float2(playerPosition.x, playerPosition.z))/2)) * deltaTime;
+                localTransform.Position.xz += direction.xz * (5 + 30f / (math.distance(localTransform.Position.xz, new float2(playerPosition.x, playerPosition.z)) / 2)) * deltaTime;
             }
             if (localTransform.Position.y > 1.2) localTransform.Position.y -= 5 * deltaTime;
             else if (localTransform.Position.y < 1.2) localTransform.Position.y = 1.2f;
-        })
-        .ScheduleParallel();
+        }).Run();
+        ecb.Playback(EntityManager);
+        ecb.Dispose();
     }
 }
 [BurstCompile]

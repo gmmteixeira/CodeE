@@ -124,6 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29e1454a8c03534fa30d87cdafef865, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 3845443125038219513, guid: 339b9f9302de75a458b7d95ba5f03c86, type: 3}
+  lifetime: 20
 --- !u!54 &5508107468043604786
 Rigidbody:
   m_ObjectHideFlags: 0

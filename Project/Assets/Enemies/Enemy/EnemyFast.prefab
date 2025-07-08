@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8576711773103377903}
   - component: {fileID: -2005616703607904522}
   m_Layer: 6
-  m_Name: Enemy
+  m_Name: EnemyFast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.55, y: 0.55, z: 0.55}
+  m_LocalScale: {x: 80, y: 80, z: 80}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -44,7 +44,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6753812053452418437}
-  m_Mesh: {fileID: -5495902117074765545, guid: 96a5b7458d5c2af4b9d78fc3db856647, type: 3}
+  m_Mesh: {fileID: -5495902117074765545, guid: f020af3c12a28d748a800a7ce9e77b0b, type: 3}
 --- !u!23 &4470361753114773362
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a418493f87a639644a8f5f2d6e2638b5, type: 2}
+  - {fileID: 2100000, guid: 7be73dd40435c25449c2c40691cde1ce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -102,13 +102,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b7a74faa1c45d42972f4236db2ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardSpeed: 13
+  forwardSpeed: 18
   turningSpeed: 2
   health: 6
   deathEffect: {fileID: 2481864664759427857, guid: b9cfd31e9fdf5af4e8c7a3e8fbd1c53f, type: 3}
   hitEffect: {fileID: 2481864664759427857, guid: cebb958f6b5b2e64c9a60730528bbf3f, type: 3}
   cardPickup: {fileID: 635627687442870852, guid: 8d7496aa4a2fc07408455cd5926c0df7, type: 3}
-  dropChance: 5
+  dropChance: 1
 --- !u!54 &1287667442512910765
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -155,7 +155,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1
+  m_Radius: 0.005
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!82 &-2005616703607904522
 AudioSource:
@@ -171,7 +171,7 @@ AudioSource:
   m_Resource: {fileID: 8300000, guid: 46d0981e44c3f1047aea16ce359ed238, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 1.5
   Loop: 1
   Mute: 0
   Spatialize: 0

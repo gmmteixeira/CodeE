@@ -9,7 +9,7 @@ public class EnemyAuthoring : MonoBehaviour
     public GameObject deathEffect;
     public GameObject hitEffect;
     public GameObject cardPickup;
-    public GameObject cardPowerup;
+    public int dropChance;
 
     private class Baker : Baker<EnemyAuthoring>
     {
@@ -27,7 +27,7 @@ public class EnemyAuthoring : MonoBehaviour
                 deathEffect = GetEntity(authoring.deathEffect, TransformUsageFlags.Dynamic),
                 hitEffect = GetEntity(authoring.hitEffect, TransformUsageFlags.Dynamic),
                 cardPickup = GetEntity(authoring.cardPickup, TransformUsageFlags.Dynamic),
-                cardPowerup = GetEntity(authoring.cardPowerup, TransformUsageFlags.Dynamic)
+                dropChance = authoring.dropChance
             });
         }
     }
@@ -45,5 +45,5 @@ public struct HealthProperties : IComponentData
     public Entity deathEffect;
     public Entity hitEffect;
     public Entity cardPickup;
-    public Entity cardPowerup;
+    public int dropChance;
 }
