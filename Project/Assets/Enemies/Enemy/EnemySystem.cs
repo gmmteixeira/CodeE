@@ -116,6 +116,8 @@ public partial struct EnemyTriggerSystem : ISystem
             bool bIsEnemy = SystemAPI.HasComponent<HomingBoidProperties>(entityB);
             bool aIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityA);
             bool bIsPlayer = SystemAPI.HasComponent<PlayerSingletonData>(entityB);
+            bool aIsLaser = SystemAPI.HasComponent<LaserProperties>(entityA);
+            bool bIsLaser = SystemAPI.HasComponent<LaserProperties>(entityB);
 
             void ProcessEnemyHit(Entity enemy, Entity player)
             {
@@ -127,6 +129,19 @@ public partial struct EnemyTriggerSystem : ISystem
                     ecb.SetComponent(player, new PlayerSingletonData { isAlive = false });
                 }
             }
+            void ProcessLaserHit(Entity laser, Entity target)
+            {
+                if (!processedEnemies.Add(laser))
+                    return;
+
+                
+                if (entityManager.HasComponent<HealthProperties>(target) && entityManager.GetComponentData<LaserProperties>(laser).activeTime > 0)
+                {
+                    var health = entityManager.GetComponentData<HealthProperties>(target);
+                    health.health -= entityManager.GetComponentData<LaserProperties>(laser).damage;
+                    ecb.SetComponent(target, health);
+                }
+            }
 
             if (aIsEnemy && bIsPlayer)
             {
@@ -135,6 +150,14 @@ public partial struct EnemyTriggerSystem : ISystem
             else if (bIsEnemy && aIsPlayer)
             {
                 ProcessEnemyHit(entityB, entityA);
+            }
+            else if (aIsLaser && bIsEnemy)
+            {
+                ProcessLaserHit(entityA, entityB);
+            }
+            else if (bIsLaser && aIsEnemy)
+            {
+                ProcessLaserHit(entityB, entityA);
             }
         }
 

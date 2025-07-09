@@ -31,7 +31,9 @@ public partial class ShootingSystem : SystemBase
         float deltaTime = SystemAPI.Time.DeltaTime;
 
         InputAction shootAction = InputSystem.actions.FindAction("Attack");
+        InputAction altShootAction = InputSystem.actions.FindAction("AltAttack");
         float shootInput = shootAction?.ReadValue<float>() ?? 0f;
+        float altShootInput = altShootAction?.ReadValue<float>() ?? 0f;
 
         // Adjust spawn position for pitch: spawn slightly in front of camera, accounting for pitch
         float3 forwardOffset = camTransform.forward * 0.3f + camTransform.up * -0.5f;
@@ -64,6 +66,37 @@ public partial class ShootingSystem : SystemBase
         }
         weaponProps.powerupDrain -= deltaTime * (0.5f + weaponProps.powerupLevel * 0.5f);
         bool fired = false;
+        if (altShootAction.triggered && weaponProps.powerupLevel > 0 && (weaponProps.powerupDrain >= 19.5f || weaponProps.powerupLevel > 1))
+        {
+            weaponProps.powerupLevel -= 1;
+            weaponProps.cooldownTimer = 0.5f;
+            float3 laserForwardOffset = camTransform.forward * 100.5f + camTransform.up * -0.5f;
+            float3 laserSpawnPosition = new float3(
+                camTransform.position.x,
+                camTransform.position.y,
+                camTransform.position.z
+            ) + laserForwardOffset;
+            Entity laser = ecb.Instantiate(weaponProps.laserPrefab);
+            ecb.SetComponent(laser, new LocalTransform
+            {
+                Position = laserSpawnPosition,
+                Rotation = projectileSpawnRotation,
+                Scale = 1.0f
+            });
+            ecb.AddComponent(laser, new LaserProperties
+            {
+                damage = 100,
+                activeTime = 0.3f
+            });
+            float3 laserScale = new float3(5, 100, 5);
+            float4x4 laserTransform = float4x4.Scale(laserScale);
+            ecb.AddComponent(laser, new PostTransformMatrix
+            {
+                Value = laserTransform
+            });
+            fired = true;
+        }
+
         if (shootInput != 0 && weaponProps.cooldownTimer <= 0f && playerData.isAlive)
         {
             float cooldown = 1;

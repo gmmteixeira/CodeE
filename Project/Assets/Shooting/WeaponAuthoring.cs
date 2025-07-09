@@ -8,6 +8,7 @@ public class WeaponAuthoring : MonoBehaviour
     public float speed;
     public int powerupLevel;
     public GameObject explosionPrefab;
+    public GameObject laserPrefab;
     public GameObject projectileHit;
     public GameObject topOffEffect;
 
@@ -84,7 +85,8 @@ public class WeaponAuthoring : MonoBehaviour
                 speed = authoring.speed,
                 explosionPrefab = GetEntity(authoring.explosionPrefab, TransformUsageFlags.Dynamic),
                 projectileHit = GetEntity(authoring.projectileHit, TransformUsageFlags.Dynamic),
-                topOffEffect = GetEntity(authoring.topOffEffect, TransformUsageFlags.Dynamic)
+                topOffEffect = GetEntity(authoring.topOffEffect, TransformUsageFlags.Dynamic),
+                laserPrefab = GetEntity(authoring.laserPrefab, TransformUsageFlags.Dynamic)
             });
         }
     }
@@ -96,6 +98,7 @@ public struct WeaponProperties : IComponentData
     public int powerupLevel;
     public Entity projectileHit;
     public Entity topOffEffect;
+    public Entity laserPrefab;
 
     // No powerup
     public float lvl0Cooldown;

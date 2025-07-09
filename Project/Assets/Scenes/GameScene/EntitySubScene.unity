@@ -192,6 +192,10 @@ PrefabInstance:
       value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: laserPrefab
+      value: 
+      objectReference: {fileID: 8805091067797267033, guid: a8f86c64d464b354c9577fc5bc4b354d, type: 3}
+    - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
       propertyPath: lvl0Cooldown
       value: 0.3
       objectReference: {fileID: 0}
