@@ -74,7 +74,7 @@ public partial class EnemySystem : SystemBase
                 }
                 
                 ecb.DestroyEntity(entity);
-                score += 1;
+                score += damageProperties.scoreReward;
                 
             }
 

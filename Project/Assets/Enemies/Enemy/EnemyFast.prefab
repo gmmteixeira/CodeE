@@ -102,11 +102,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b7a74faa1c45d42972f4236db2ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forwardSpeed: 18
+  forwardSpeed: 16
   turningSpeed: 2
   health: 6
-  deathEffect: {fileID: 2481864664759427857, guid: b9cfd31e9fdf5af4e8c7a3e8fbd1c53f, type: 3}
-  hitEffect: {fileID: 2481864664759427857, guid: cebb958f6b5b2e64c9a60730528bbf3f, type: 3}
+  scoreReward: 1
+  deathEffect: {fileID: 2481864664759427857, guid: 7daa38824d3c96b47aaa6de1d2f4a355, type: 3}
+  hitEffect: {fileID: 2481864664759427857, guid: 58aba463b596e8a4e9290d9a3e4e08a6, type: 3}
   cardPickup: {fileID: 635627687442870852, guid: 8d7496aa4a2fc07408455cd5926c0df7, type: 3}
   dropChance: 1
 --- !u!54 &1287667442512910765
@@ -166,12 +167,12 @@ AudioSource:
   m_GameObject: {fileID: 6753812053452418437}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: dfd98e115291ee24c8b4e073a040c7da, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 46d0981e44c3f1047aea16ce359ed238, type: 3}
-  m_Resource: {fileID: 8300000, guid: 46d0981e44c3f1047aea16ce359ed238, type: 3}
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 7ef634af59c385c48b9882f6e48a667d, type: 3}
+  m_Resource: {fileID: 8300000, guid: 7ef634af59c385c48b9882f6e48a667d, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1.5
+  m_Pitch: 1
   Loop: 1
   Mute: 0
   Spatialize: 0

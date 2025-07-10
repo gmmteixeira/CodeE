@@ -46,10 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 6753812053452418437, guid: 0035f254201b35442acf43db8053acc8, type: 3}
-  fastEnemyPrefab: {fileID: 6753812053452418437, guid: 2348a3f51d63f9c4b9975e8c6cf340f4, type: 3}
-  tankEnemyPrefab: {fileID: 6753812053452418437, guid: ebda85a785727f34cafc2b15d9d5473b, type: 3}
+  scale: 0.55
   cooldown: 0.5
-  enemyCount: 0
+  enemyCount: 10
   cooldownVarMin: 0.05
   cooldownVarMax: 0.1
 --- !u!82 &6186947086109316214

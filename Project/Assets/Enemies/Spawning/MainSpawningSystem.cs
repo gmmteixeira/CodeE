@@ -31,8 +31,18 @@ public partial class MainSpawningSystem : SystemBase
             }
 
             float angle = UnityEngine.Random.Range(0f, 2 * math.PI);
-            Entity spawner = ecb.Instantiate(mainSpawning.spawnerPrefab);
-            ecb.SetComponent(spawner, new LocalTransform
+            float randomChance = UnityEngine.Random.Range(0f, 1f);
+            Entity spawner = mainSpawning.swarmerEnemySpawner;
+            if (score >= 400 && randomChance < 0.1f)
+            {
+                spawner = mainSpawning.tankEnemySpawner;
+            }
+            else if (score >= 200 && randomChance < 0.3f)
+            {
+                spawner = mainSpawning.fastEnemySpawner;
+            }
+            Entity spawnedSpawner = ecb.Instantiate(spawner);
+            ecb.SetComponent(spawnedSpawner, new LocalTransform
             {
                 Position = new float3(math.cos(angle) * mainSpawning.ringdistance,
                                       mainSpawning.yOffset,

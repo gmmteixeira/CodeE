@@ -117,7 +117,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 3
 --- !u!135 &-2384467579306163415
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -153,3 +153,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   distanceLimit: 200
   damage: 1
+  explosion: 0
+  explosionPrefab: {fileID: 0}
+  projectileHit: {fileID: 0}

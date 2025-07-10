@@ -6,6 +6,7 @@ public class EnemyAuthoring : MonoBehaviour
     public float forwardSpeed;
     public float turningSpeed;
     public int health;
+    public int scoreReward;
     public GameObject deathEffect;
     public GameObject hitEffect;
     public GameObject cardPickup;
@@ -27,7 +28,8 @@ public class EnemyAuthoring : MonoBehaviour
                 deathEffect = GetEntity(authoring.deathEffect, TransformUsageFlags.Dynamic),
                 hitEffect = GetEntity(authoring.hitEffect, TransformUsageFlags.Dynamic),
                 cardPickup = GetEntity(authoring.cardPickup, TransformUsageFlags.Dynamic),
-                dropChance = authoring.dropChance
+                dropChance = authoring.dropChance,
+                scoreReward = authoring.scoreReward
             });
         }
     }
@@ -46,4 +48,5 @@ public struct HealthProperties : IComponentData
     public Entity hitEffect;
     public Entity cardPickup;
     public int dropChance;
+    public int scoreReward;
 }

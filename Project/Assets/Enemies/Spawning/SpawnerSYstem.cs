@@ -25,30 +25,6 @@ public partial class SpawnerSystem : SystemBase
         Entities.WithAll<SpawnerProperties>().ForEach((Entity entity, ref SpawnerProperties spawner, ref LocalTransform localTransform) =>
         {
             spawner.cooldown -= deltaTime;
-            if (!spawner.isSet)
-            {
-                spawner.isSet = true;
-                float randomFloat = UnityEngine.Random.Range(0f, 1f);
-
-                if (randomFloat < 0.25f && gameData.score >= 200)
-                {
-                    spawner.spawnedEnemy = spawner.fastEnemyPrefab;
-                    spawner.scale = 80f;
-                    spawner.enemyCount = 3;
-                }
-                else if (randomFloat < 0.1f && gameData.score >= 400)
-                {
-                    spawner.spawnedEnemy = spawner.tankEnemyPrefab;
-                    spawner.scale = 80f;
-                    spawner.enemyCount = 1;
-                }
-                else
-                {
-                    spawner.spawnedEnemy = spawner.enemyPrefab;
-                    spawner.scale = 0.55f;
-                    spawner.enemyCount = 10;
-                }
-            }
             
             if (spawner.cooldown <= 0f && playerData.isAlive)
             {
@@ -57,7 +33,7 @@ public partial class SpawnerSystem : SystemBase
                 if (spawner.enemyCount > 0)
                 {
                     spawner.enemyCount--;
-                    Entity enemyEntity = ecb.Instantiate(spawner.spawnedEnemy);
+                    Entity enemyEntity = ecb.Instantiate(spawner.enemyPrefab);
                     float3 direction = math.normalize(new float3(0f, 0f, 0f) - localTransform.Position);
                     float3 toCenter = math.normalize(new float3(0f, 0f, 0f) - localTransform.Position);
                     float yaw = math.atan2(toCenter.x, toCenter.z);

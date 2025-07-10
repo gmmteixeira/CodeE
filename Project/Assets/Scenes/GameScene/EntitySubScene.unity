@@ -171,6 +171,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: EntitySceneUtils
       objectReference: {fileID: 0}
+    - target: {fileID: 4002901279596766365, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: fastEnemySpawner
+      value: 
+      objectReference: {fileID: 6272152647766170856, guid: 83f96e4e9181c484c9eb70f263fa018f, type: 3}
+    - target: {fileID: 4002901279596766365, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: tankEnemySpawner
+      value: 
+      objectReference: {fileID: 6272152647766170856, guid: d1d512e1c046bbe45b32f8dae210242a, type: 3}
+    - target: {fileID: 4002901279596766365, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
+      propertyPath: swarmerEnemySpawner
+      value: 
+      objectReference: {fileID: 6272152647766170856, guid: ac0402327701c2e4b9673eb42c3eba19, type: 3}
     - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
       propertyPath: lvl0Damage
       value: 2

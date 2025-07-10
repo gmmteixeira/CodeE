@@ -3,7 +3,9 @@ using UnityEngine;
 
 public class MainSpawningAuthoring : MonoBehaviour
 {
-    public GameObject spawnerPrefab;
+    public GameObject swarmerEnemySpawner;
+    public GameObject fastEnemySpawner;
+    public GameObject tankEnemySpawner;
     public float cooldown = 5f;
     public float cooldownVar = 1f;
     public int ringdistance;
@@ -15,7 +17,9 @@ public class MainSpawningAuthoring : MonoBehaviour
             var entity = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(entity, new MainSpawningProperties
             {
-                spawnerPrefab = GetEntity(authoring.spawnerPrefab, TransformUsageFlags.Dynamic),
+                swarmerEnemySpawner = GetEntity(authoring.swarmerEnemySpawner, TransformUsageFlags.Dynamic),
+                fastEnemySpawner = GetEntity(authoring.fastEnemySpawner, TransformUsageFlags.Dynamic),
+                tankEnemySpawner = GetEntity(authoring.tankEnemySpawner, TransformUsageFlags.Dynamic),
                 cooldown = authoring.cooldown,
                 cooldownVar = authoring.cooldownVar,
                 ringdistance = authoring.ringdistance,
@@ -27,7 +31,9 @@ public class MainSpawningAuthoring : MonoBehaviour
 
 public partial struct MainSpawningProperties : IComponentData
 {
-    public Entity spawnerPrefab;
+    public Entity swarmerEnemySpawner;
+    public Entity fastEnemySpawner;
+    public Entity tankEnemySpawner;
     public float cooldown;
     public float cooldownVar;
     public float ringdistance;
