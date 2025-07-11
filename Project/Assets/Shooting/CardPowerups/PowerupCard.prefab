@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   explosionPrefab: {fileID: 3845443125038219513, guid: 339b9f9302de75a458b7d95ba5f03c86, type: 3}
-  lifetime: 20
+  lifetime: 25
 --- !u!54 &5508107468043604786
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -161,7 +161,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 635627687442870852}
   serializedVersion: 8
-  lengthInSec: 30
+  lengthInSec: 25
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0

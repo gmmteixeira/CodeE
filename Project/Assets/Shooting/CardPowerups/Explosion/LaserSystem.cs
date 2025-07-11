@@ -9,19 +9,15 @@ public partial class LaserSystem : SystemBase
     protected override void OnUpdate()
     {
         float deltaTime = SystemAPI.Time.DeltaTime;
-        Entities.WithAll<LaserProperties>().ForEach((ref LaserProperties laser, ref PhysicsMass mass, ref PostTransformMatrix postTransform) =>
+        Entities.WithAll<LaserProperties>().ForEach((ref LaserProperties laser, ref PhysicsMass mass, ref PostTransformMatrix postTransform, ref LocalTransform localTransform) =>
         {
             mass.InverseInertia = float3.zero;
             laser.activeTime -= deltaTime;
             postTransform.Value.c0.x -= 10 * deltaTime;
-            if (postTransform.Value.c0.x < 0)
-            {
-                postTransform.Value.c0.x = 0;
-            }
             postTransform.Value.c2.z -= 10 * deltaTime;
-            if (postTransform.Value.c2.z < 0)
+            if (postTransform.Value.c0.x < 0 || postTransform.Value.c2.z < 0)
             {
-                postTransform.Value.c2.z = 0;
+                localTransform.Scale = 0;
             }
         }).ScheduleParallel();
     }

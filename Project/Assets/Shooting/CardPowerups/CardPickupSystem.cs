@@ -49,11 +49,18 @@ public partial class CardPickupSystem : SystemBase
                     ecb.DestroyEntity(entity);
                 }
             }
-            localTransform.Rotation = math.mul(localTransform.Rotation, quaternion.RotateY(math.radians(180 * deltaTime)));
+            localTransform.Rotation = math.mul(localTransform.Rotation, quaternion.RotateY(math.radians(900 / (cardPickup.lifetime / 2) * deltaTime)));
             if (shootingCooldown <= 0)
             {
                 float3 direction = math.normalize(new float3(playerPosition.x, 0, playerPosition.z) - new float3(localTransform.Position.x, 0, localTransform.Position.z));
-                localTransform.Position.xz += direction.xz * (5 + 30f / (math.distance(localTransform.Position.xz, new float2(playerPosition.x, playerPosition.z)) / 2)) * deltaTime;
+                if (playerPosition.y < 3)
+                {
+                    localTransform.Position.xz += direction.xz * (5 + 30f / Mathf.Clamp(math.distance(localTransform.Position.xz, new float2(playerPosition.x, playerPosition.z)) / 2, 0.5f, 300f)) * deltaTime;
+                }
+                else
+                {
+                    localTransform.Position += math.normalize(new float3(playerPosition.x, playerPosition.y, playerPosition.z) - localTransform.Position) * 40 * deltaTime;
+                }
             }
             if (localTransform.Position.y > 1.2) localTransform.Position.y -= 5 * deltaTime;
             else if (localTransform.Position.y < 1.2) localTransform.Position.y = 1.2f;
@@ -76,7 +83,7 @@ public partial struct PowerupTriggerSystem : ISystem
         {
             playerPosition = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<PlayerSingletonData>()).Position;
         } else return;
-        float3 effectSpawnPosition = new float3(playerPosition.x, 0.5f, playerPosition.z);
+        float3 effectSpawnPosition = new float3(playerPosition.x, playerPosition.y - 0.5f, playerPosition.z);
         var simSingleton = SystemAPI.GetSingleton<SimulationSingleton>();
         WeaponProperties weaponProperties;
         if (SystemAPI.HasSingleton<WeaponProperties>())

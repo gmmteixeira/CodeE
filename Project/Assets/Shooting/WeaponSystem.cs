@@ -66,6 +66,7 @@ public partial class ShootingSystem : SystemBase
         }
         weaponProps.powerupDrain -= deltaTime * (0.5f + weaponProps.powerupLevel * 0.5f);
         bool fired = false;
+        bool altFired = false;
         if (altShootAction.triggered && weaponProps.powerupLevel > 0 && (weaponProps.powerupDrain >= 19.5f || weaponProps.powerupLevel > 1))
         {
             weaponProps.powerupLevel -= 1;
@@ -95,6 +96,7 @@ public partial class ShootingSystem : SystemBase
                 Value = laserTransform
             });
             fired = true;
+            altFired = true;
         }
 
         if (shootInput != 0 && weaponProps.cooldownTimer <= 0f && playerData.isAlive)
@@ -203,6 +205,9 @@ public partial class ShootingSystem : SystemBase
 
         if (fired)
             WeaponEvents.WeaponFired();
+
+        if (altFired)
+            WeaponEvents.WeaponAltFired();
 
         _ecbSystem.AddJobHandleForProducer(Dependency);
     }

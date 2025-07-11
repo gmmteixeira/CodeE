@@ -56,6 +56,15 @@ public class PlayerBehaviour : MonoBehaviour
     private void OnEnable()
     {
         PlayerEvents.OnPlayerDeath += OnPlayerDeath;
+        WeaponEvents.OnWeaponAltFired += AltFired;
+    }
+
+    private void AltFired()
+    {
+        if (isAlive && Vector3.Dot(Camera.main.transform.forward.normalized, Vector3.down) > 0.9f)
+        {
+            rb.AddForce(transform.up * 20f, ForceMode.Impulse);
+        }
     }
 
     private void OnPlayerDeath()
@@ -68,6 +77,7 @@ public class PlayerBehaviour : MonoBehaviour
     private void OnDisable()
     {
         PlayerEvents.OnPlayerDeath -= OnPlayerDeath;
+        WeaponEvents.OnWeaponAltFired -= AltFired;
     }
 
     void Update()
