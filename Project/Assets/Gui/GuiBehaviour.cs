@@ -14,6 +14,7 @@ public class GuiBehaviour : MonoBehaviour
     public TextMeshProUGUI highScore;
     public TextMeshProUGUI endScore;
     public TextMeshProUGUI restartTip;
+    public Image crosshair;
     public Image powerupImage;
     public Sprite[] powerupSprites;
     public Image powerupImageMask;
@@ -39,6 +40,7 @@ public class GuiBehaviour : MonoBehaviour
         highScore.gameObject.SetActive(false);
         endScore.gameObject.SetActive(false);
         restartTip.gameObject.SetActive(false);
+        crosshair.gameObject.SetActive(true);
         score.gameObject.SetActive(true);
         powerupImage.gameObject.SetActive(true);
         hand.SetActive(true);
@@ -78,6 +80,7 @@ public class GuiBehaviour : MonoBehaviour
         highScore.gameObject.SetActive(true);
         endScore.gameObject.SetActive(true);
         score.gameObject.SetActive(false);
+        crosshair.gameObject.SetActive(false);
         restartTip.gameObject.SetActive(true);
         powerupImageBG.gameObject.SetActive(false);
         endScore.text = score.text;

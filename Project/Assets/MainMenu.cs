@@ -19,10 +19,8 @@ public class MainMenu : MonoBehaviour
     {
         asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
-        // Optional: Don't let the scene activate immediately
         asyncLoad.allowSceneActivation = false;
 
-        // Wait until the load is almost done
         while (!asyncLoad.isDone)
         {
             yield return null;

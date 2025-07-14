@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b43e60d7d57c37b46a343326db43e8c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnerPrefab: {fileID: 6272152647766170856, guid: ac0402327701c2e4b9673eb42c3eba19, type: 3}
+  swarmerEnemySpawner: {fileID: 0}
+  fastEnemySpawner: {fileID: 0}
+  tankEnemySpawner: {fileID: 0}
   cooldown: 3
   cooldownVar: 1
   ringdistance: 60
@@ -402,7 +404,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8344439570979220853, guid: 592ed3a6c52c30c48a13e6bca4652312, type: 3}
       propertyPath: powerupLevel
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8344439570979220853, guid: 592ed3a6c52c30c48a13e6bca4652312, type: 3}
       propertyPath: lvl2Explosion

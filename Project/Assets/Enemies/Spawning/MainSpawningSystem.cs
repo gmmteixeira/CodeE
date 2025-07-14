@@ -33,11 +33,11 @@ public partial class MainSpawningSystem : SystemBase
             float angle = UnityEngine.Random.Range(0f, 2 * math.PI);
             float randomChance = UnityEngine.Random.Range(0f, 1f);
             Entity spawner = mainSpawning.swarmerEnemySpawner;
-            if (score >= 400 && randomChance < 0.1f)
+            if (score >= 250 && randomChance < 0.1f)
             {
                 spawner = mainSpawning.tankEnemySpawner;
             }
-            else if (score >= 200 && randomChance < 0.3f)
+            else if (score >= 150 && randomChance < 0.3f)
             {
                 spawner = mainSpawning.fastEnemySpawner;
             }

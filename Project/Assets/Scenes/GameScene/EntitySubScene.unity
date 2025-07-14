@@ -221,7 +221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
       propertyPath: powerupLevel
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7069949960066632076, guid: 71aa0194765ec8f429ebaedd49818f40, type: 3}
       propertyPath: topOffEffect

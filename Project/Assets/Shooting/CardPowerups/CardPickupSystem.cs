@@ -78,7 +78,7 @@ public partial struct PowerupTriggerSystem : ISystem
     {
         // Ensure all dependencies (including physics jobs) are complete before accessing simulation data
         state.Dependency.Complete();
-        float3 playerPosition = float3.zero;
+        float3 playerPosition;
         if (SystemAPI.HasSingleton<PlayerSingletonData>())
         {
             playerPosition = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<PlayerSingletonData>()).Position;
@@ -90,7 +90,7 @@ public partial struct PowerupTriggerSystem : ISystem
         {
             weaponProperties = SystemAPI.GetSingleton<WeaponProperties>();
         } else return;
-        int score = 0;
+        int score;
         if (SystemAPI.HasSingleton<GameComponentData>())
         {
             score = SystemAPI.GetSingleton<GameComponentData>().score;
@@ -99,7 +99,6 @@ public partial struct PowerupTriggerSystem : ISystem
         var sim = simSingleton.AsSimulation();
 
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        var entityManager = state.EntityManager;
 
         var processedEnemies = new NativeHashSet<Entity>(16, Allocator.Temp);
 
@@ -136,7 +135,7 @@ public partial struct PowerupTriggerSystem : ISystem
                 else if (weaponProperties.powerupLevel == 3 && weaponProperties.powerupDrain > 10f)
                 {
                     weaponProperties.powerupDrain = 20f;
-                    score += 1;
+                    score += 5;
                 }
                 else
                 {
