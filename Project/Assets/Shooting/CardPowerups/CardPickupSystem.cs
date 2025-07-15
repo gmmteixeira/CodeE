@@ -90,10 +90,10 @@ public partial struct PowerupTriggerSystem : ISystem
         {
             weaponProperties = SystemAPI.GetSingleton<WeaponProperties>();
         } else return;
-        int score;
+        GameComponentData game;
         if (SystemAPI.HasSingleton<GameComponentData>())
         {
-            score = SystemAPI.GetSingleton<GameComponentData>().score;
+            game = SystemAPI.GetSingleton<GameComponentData>();
         } else return;
 
         var sim = simSingleton.AsSimulation();
@@ -128,6 +128,10 @@ public partial struct PowerupTriggerSystem : ISystem
                 ecb.DestroyEntity(card);
                 if ((weaponProperties.powerupLevel < 1 || weaponProperties.powerupDrain > 10f) && weaponProperties.powerupLevel < 3)
                 {
+                    if (game.tutorial == 7 && weaponProperties.powerupLevel == 2)
+                    {
+                        game.tutorial = 8;
+                    }
                     weaponProperties.powerupLevel += 1;
                     weaponProperties.powerupDrain = 10f;
 
@@ -135,11 +139,15 @@ public partial struct PowerupTriggerSystem : ISystem
                 else if (weaponProperties.powerupLevel == 3 && weaponProperties.powerupDrain > 10f)
                 {
                     weaponProperties.powerupDrain = 20f;
-                    score += 5;
+                    game.score += 5;
                 }
                 else
                 {
                     weaponProperties.powerupDrain = 20f;
+                    if (game.tutorial == 6 && weaponProperties.powerupLevel == 1)
+                    {
+                        game.tutorial = 7;
+                    }
                 }
             }
 
@@ -155,7 +163,7 @@ public partial struct PowerupTriggerSystem : ISystem
         
         if (SystemAPI.HasSingleton<GameComponentData>())
         {
-            SystemAPI.SetSingleton(new GameComponentData { score = score });
+            SystemAPI.SetSingleton(game);
         }
         if (SystemAPI.HasSingleton<WeaponProperties>())
         {

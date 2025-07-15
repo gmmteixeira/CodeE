@@ -21,18 +21,19 @@ public partial class EnemySystem : SystemBase
         Vector3 playerPosition = Vector3.zero;
         if (SystemAPI.HasSingleton<PlayerSingletonData>())
         {
-            // Get the player entity and its LocalTransform
             var playerEntity = SystemAPI.GetSingletonEntity<PlayerSingletonData>();
             var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEntity);
             playerPosition = playerTransform.Position;
-        } else return;
-        
-        int score = 0;
+        }
+        else return;
+
+        GameComponentData game;
         if (SystemAPI.HasSingleton<GameComponentData>())
         {
-            score = SystemAPI.GetSingleton<GameComponentData>().score;
-        } else return;
-        
+            game = SystemAPI.GetSingleton<GameComponentData>();
+        }
+        else return;
+
         Entities
         .WithAll<PhysicsVelocity>()
         .ForEach((ref PhysicsMass mass, ref PhysicsVelocity velocity, ref LocalTransform localTransform, in HomingBoidProperties homingBoidProperties) =>
@@ -54,14 +55,26 @@ public partial class EnemySystem : SystemBase
         {
             if (damageProperties.health <= 0)
             {
+                if (game.tutorial == 5)
+                {
+                    game.tutorial = 6;
+                }
                 Entity deathEntity = ecb.Instantiate(damageProperties.deathEffect);
                 ecb.SetComponent(deathEntity, new LocalTransform
                 {
                     Position = SystemAPI.GetComponent<LocalTransform>(entity).Position,
                     Scale = 1
                 });
-
-                if (UnityEngine.Random.Range(0, 100) < damageProperties.dropChance)
+                float chance = 0;
+                if (game.tutorial == 0)
+                {
+                    chance = damageProperties.dropChance;
+                }
+                else if (game.tutorial >= 3 && game.tutorial <= 9)
+                {
+                    chance = 10;
+                }
+                if (UnityEngine.Random.Range(0, 100) < chance)
                 {
                     Entity cardEntity = ecb.Instantiate(damageProperties.cardPickup);
                     ecb.SetComponent(cardEntity, new LocalTransform
@@ -70,24 +83,26 @@ public partial class EnemySystem : SystemBase
                         Rotation = quaternion.identity,
                         Scale = 100
                     });
-                    
+
                 }
-                
+
                 ecb.DestroyEntity(entity);
-                score += damageProperties.scoreReward;
-                
+                game.score += damageProperties.scoreReward;
+
             }
 
         }).Run();
+        
         if (SystemAPI.HasSingleton<GameComponentData>())
         {
-            SystemAPI.SetSingleton(new GameComponentData { score = score });
+            SystemAPI.SetSingleton(game);
         }
 
         Dependency.Complete();
         ecb.Playback(EntityManager);
         ecb.Dispose();
     }
+    
 }
 
 [BurstCompile]
@@ -104,6 +119,12 @@ public partial struct EnemyTriggerSystem : ISystem
 
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var entityManager = state.EntityManager;
+        GameComponentData game = default;
+        if (SystemAPI.HasSingleton<GameComponentData>())
+        {
+            game = SystemAPI.GetSingleton<GameComponentData>();
+        }
+        
 
         var processedEnemies = new NativeHashSet<Entity>(16, Allocator.Temp);
 
@@ -134,12 +155,16 @@ public partial struct EnemyTriggerSystem : ISystem
                 if (!processedEnemies.Add(laser))
                     return;
 
-                
+
                 if (entityManager.HasComponent<HealthProperties>(target) && entityManager.GetComponentData<LaserProperties>(laser).activeTime > 0)
                 {
                     var health = entityManager.GetComponentData<HealthProperties>(target);
                     health.health -= entityManager.GetComponentData<LaserProperties>(laser).damage;
                     ecb.SetComponent(target, health);
+                    if (game.tutorial == 8)
+                    {
+                        game.tutorial = 9;
+                    }
                 }
             }
 
@@ -159,6 +184,10 @@ public partial struct EnemyTriggerSystem : ISystem
             {
                 ProcessLaserHit(entityB, entityA);
             }
+        }
+        if (SystemAPI.HasSingleton<GameComponentData>())
+        {
+            SystemAPI.SetSingleton(game);
         }
 
         ecb.Playback(state.EntityManager);

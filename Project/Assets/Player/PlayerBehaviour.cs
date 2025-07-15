@@ -90,38 +90,51 @@ public class PlayerBehaviour : MonoBehaviour
         // Update the LocalTransform component with the current position
             if (playerEntity != Entity.Null)
             {
-                if (entityManager.HasComponent<LocalTransform>(playerEntity))
+            if (entityManager.HasComponent<LocalTransform>(playerEntity))
+            {
+                var localTransform = entityManager.GetComponentData<LocalTransform>(playerEntity);
+                var playerData = entityManager.GetComponentData<PlayerSingletonData>(playerEntity);
+                var game = entityManager.CreateEntityQuery(typeof(GameComponentData)).GetSingleton<GameComponentData>();
+                if (playerData.isAlive)
                 {
-                    var localTransform = entityManager.GetComponentData<LocalTransform>(playerEntity);
-                    var playerData = entityManager.GetComponentData<PlayerSingletonData>(playerEntity);
-                    if (playerData.isAlive)
+                    float camYaw = Camera.main.transform.eulerAngles.y;
+                    yaw = Quaternion.Euler(0, camYaw, 0);
+
+                    movementAction = InputSystem.actions.FindAction("move");
+                    jumpAction = InputSystem.actions.FindAction("jump");
+                    move = movementAction.ReadValue<Vector2>();
+
+                    // Use button press interaction for jump
+                    if (jumpAction.triggered && floored)
                     {
-                        float camYaw = Camera.main.transform.eulerAngles.y;
-                        yaw = Quaternion.Euler(0, camYaw, 0);
-
-                        movementAction = InputSystem.actions.FindAction("move");
-                        jumpAction = InputSystem.actions.FindAction("jump");
-                        move = movementAction.ReadValue<Vector2>();
-
-                        // Use button press interaction for jump
-                        if (jumpAction.triggered && floored)
-                        {
-                            floored = false;
-                            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                            rb.AddForce(yaw * new Vector3(move.x, 0, move.y) * jumpBoost, ForceMode.Impulse);
-                            physicsMaterial.dynamicFriction = 0f;
-                        }
-
-                        if (localTransform.Position.y < -1f) playerData.isAlive = false;
-                    }
-                    else if (isAlive)
-                    {
-                        PlayerEvents.PlayerDeath();
+                        floored = false;
+                        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                        rb.AddForce(yaw * new Vector3(move.x, 0, move.y) * jumpBoost, ForceMode.Impulse);
+                        physicsMaterial.dynamicFriction = 0f;
                     }
 
-                    localTransform.Position = transform.position;
-                    entityManager.SetComponentData(playerEntity, localTransform);
-                    entityManager.SetComponentData(playerEntity, playerData);
+                    if (localTransform.Position.y < -1f) playerData.isAlive = false;
+                }
+                else if (isAlive)
+                {
+                    PlayerEvents.PlayerDeath();
+                }
+
+                if (Input.GetKeyDown(KeyCode.R))
+                {
+                    if (game.tutorial == 9)
+                    {
+                        game.tutorial = 0;
+                    }
+                    entityManager.CreateEntityQuery(typeof(GameComponentData)).SetSingleton(game);
+                    Scene currentScene = SceneManager.GetActiveScene();
+                    SceneManager.LoadScene(currentScene.name);
+                    
+                }
+                localTransform.Position = transform.position;
+                entityManager.SetComponentData(playerEntity, localTransform);
+                entityManager.SetComponentData(playerEntity, playerData);
+                entityManager.CreateEntityQuery(typeof(GameComponentData)).SetSingleton(game);
                 }
             }
             else
@@ -142,11 +155,6 @@ public class PlayerBehaviour : MonoBehaviour
             SceneManager.LoadScene("MainMenu");
         }
         
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Scene currentScene = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(currentScene.name);
-        }
     }
 
     void FixedUpdate()

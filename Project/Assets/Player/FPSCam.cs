@@ -13,7 +13,6 @@ public class FPSCam : MonoBehaviour
     private float xRotation = 0f;
     private InputAction camControl;
     private Vector2 look;
-
     private EntityManager entityManager;
     private Entity playerEntity;
     private float camShakeTime = 0f;
@@ -21,7 +20,7 @@ public class FPSCam : MonoBehaviour
     void Start()
     {
         entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
-        sensitivity = PlayerPrefs.GetFloat("Sensitivity", 0.5f)/1.5f;
+        sensitivity = PlayerPrefs.GetFloat("Sensitivity", 0.5f) / 1.5f;
 
         Cursor.lockState = CursorLockMode.Locked;
         camControl = InputSystem.actions.FindAction("look");
@@ -29,10 +28,18 @@ public class FPSCam : MonoBehaviour
     private void OnEnable()
     {
         WeaponEvents.OnWeaponAltFired += laserFired;
+        PlayerEvents.OnPlayerDeath += OnPlayerDeath;
     }
+
+    private void OnPlayerDeath()
+    {
+        GetComponent<AudioListener>().enabled = false;
+    }
+
     private void OnDisable()
     {
         WeaponEvents.OnWeaponAltFired -= laserFired;
+        PlayerEvents.OnPlayerDeath -= OnPlayerDeath;
     }
     private void laserFired()
     {

@@ -33,9 +33,8 @@ public partial class ShootingSystem : SystemBase
         InputAction shootAction = InputSystem.actions.FindAction("Attack");
         InputAction altShootAction = InputSystem.actions.FindAction("AltAttack");
         float shootInput = shootAction?.ReadValue<float>() ?? 0f;
-        float altShootInput = altShootAction?.ReadValue<float>() ?? 0f;
+        var game = SystemAPI.GetSingleton<GameComponentData>();
 
-        // Adjust spawn position for pitch: spawn slightly in front of camera, accounting for pitch
         float3 forwardOffset = camTransform.forward * 0.3f + camTransform.up * -0.5f;
         float3 spawnPosition = new float3(
             camTransform.position.x,
@@ -43,10 +42,8 @@ public partial class ShootingSystem : SystemBase
             camTransform.position.z
         ) + forwardOffset;
         quaternion spawnRotation = quaternion.LookRotationSafe(camTransform.forward, math.up());
-        // If your model's forward is +Y, rotate -90° around X to align Z+ to Y+
         quaternion projectileSpawnRotation = math.mul(spawnRotation, quaternion.RotateX(-math.radians(90f)));
 
-        // Singleton pattern: get the only entity with WeaponProperties
         EntityQuery weaponQuery = GetEntityQuery(ComponentType.ReadWrite<WeaponProperties>());
         if (weaponQuery.CalculateEntityCount() == 0)
             return;
@@ -67,7 +64,7 @@ public partial class ShootingSystem : SystemBase
         weaponProps.powerupDrain -= deltaTime * (0.5f + weaponProps.powerupLevel * 0.5f);
         bool fired = false;
         bool altFired = false;
-        if (altShootAction.triggered && weaponProps.powerupLevel > 0 && (weaponProps.powerupDrain >= 19.5f || weaponProps.powerupLevel > 1))
+        if (altShootAction.triggered && weaponProps.powerupLevel > 0 && (weaponProps.powerupDrain >= 19.5f || weaponProps.powerupLevel > 1) && (game.tutorial == 0 || game.tutorial >= 8))
         {
             weaponProps.powerupLevel -= 1;
             weaponProps.cooldownTimer = 0.5f;
@@ -99,7 +96,7 @@ public partial class ShootingSystem : SystemBase
             altFired = true;
         }
 
-        if (shootInput != 0 && weaponProps.cooldownTimer <= 0f && playerData.isAlive)
+        if (shootInput != 0 && weaponProps.cooldownTimer <= 0f && playerData.isAlive && (game.tutorial == 0 || game.tutorial >= 5))
         {
             float cooldown = 1;
             int projectileCount = 1;
@@ -202,7 +199,10 @@ public partial class ShootingSystem : SystemBase
 
         // Write back the modified struct
         EntityManager.SetComponentData(weaponEntity, weaponProps);
-
+        if (SystemAPI.HasSingleton<GameComponentData>())
+        {
+            SystemAPI.SetSingleton(game);
+        }
         if (fired)
             WeaponEvents.WeaponFired();
 
