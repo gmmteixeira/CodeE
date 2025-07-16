@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TMPro;
 using Unity.Entities;
+using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -21,6 +22,7 @@ public class GuiBehaviour : MonoBehaviour
     public Image powerupImageMask;
     public Image powerupImageBG;
     public GameObject hand;
+    public GameObject listener;
     private GameData gameData;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -65,7 +67,7 @@ public class GuiBehaviour : MonoBehaviour
                 {
                     var gameComponetData = entityManager.CreateEntityQuery(typeof(GameComponentData)).GetSingleton<GameComponentData>();
                     tutorial = gameComponetData.tutorial;
-                    if (gameComponetData.score > gameData.highscore)
+                    if (gameComponetData.score > gameData.highscore && gameComponetData.tutorial == 0)
                     {
                         gameData.highscore = gameComponetData.score;
                         BinaryFormatter formatter = new BinaryFormatter();
@@ -85,7 +87,7 @@ public class GuiBehaviour : MonoBehaviour
             highScore.gameObject.SetActive(true);
             endScore.gameObject.SetActive(true);
         }
-        
+        listener.transform.position += new Vector3(0, 10000, 0);
         score.gameObject.SetActive(false);
         restartTip.gameObject.SetActive(true);
         crosshair.gameObject.SetActive(false);
@@ -118,6 +120,10 @@ public class GuiBehaviour : MonoBehaviour
                         gameData.tutorial++;
                         gameData.tutorialTimer += 6;
                     }
+                    if (gameData.tutorial > 0)
+                    {
+                        tutorialText.gameObject.SetActive(true);
+                    }
                     if (gameData.tutorial == 1)
                     {
                         tutorialText.text = "";
@@ -132,11 +138,11 @@ public class GuiBehaviour : MonoBehaviour
                     }
                     else if (gameData.tutorial == 4)
                     {
-                        tutorialText.text = "Jump to gain a smal movement boost, do it repeatedly to accumulate momentum.";
+                        tutorialText.text = "Jump to gain a small movement boost, do it repeatedly to accumulate momentum.";
                     }
                     else if (gameData.tutorial == 5)
                     {
-                        tutorialText.text = "Press left click to shoot cards, hold to continue shooting. Kill enemies to score points";
+                        tutorialText.text = "Hold left click to shoot cards. Kill enemies to score points";
                     }
                     else if (gameData.tutorial == 6)
                     {
@@ -144,11 +150,11 @@ public class GuiBehaviour : MonoBehaviour
                     }
                     else if (gameData.tutorial == 7)
                     {
-                        tutorialText.text = "If the meter is bellow half when you collect a power up it tops it off, if its above then it levels up, maximum is level 3, collecting extra cards will give you score.";
+                        tutorialText.text = "If the meter is bellow half when you collect a power-up it tops it off, if its above then it levels up, maximum level is 3, collecting extra cards will give you score.";
                     }
                     else if (gameData.tutorial == 8)
                     {
-                        tutorialText.text = "When above level 1, press right click to shoot a powerfull laser.";
+                        tutorialText.text = "When above level 1, press right click to shoot a powerful laser.";
                     }
                     else if (gameData.tutorial == 9)
                     {

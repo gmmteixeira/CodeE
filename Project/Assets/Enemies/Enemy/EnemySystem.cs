@@ -70,9 +70,9 @@ public partial class EnemySystem : SystemBase
                 {
                     chance = damageProperties.dropChance;
                 }
-                else if (game.tutorial >= 3 && game.tutorial <= 9)
+                else if (game.tutorial >= 3 && game.tutorial <= 8)
                 {
-                    chance = 10;
+                    chance = 12;
                 }
                 if (UnityEngine.Random.Range(0, 100) < chance)
                 {

@@ -39,9 +39,13 @@ public partial class MainSpawningSystem : SystemBase
             }
             else if (game.tutorial >= 7)
             {
-                mainSpawning.cooldown = 5;
+                mainSpawning.cooldown = 6;
             }
-            else if (game.tutorial >= 3 )
+            else if (game.tutorial >= 5)
+            {
+                mainSpawning.cooldown = 8;
+            }
+            else if (game.tutorial >= 3)
             {
                 mainSpawning.cooldown = 13;
             }

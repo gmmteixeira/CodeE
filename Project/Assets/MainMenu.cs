@@ -34,8 +34,10 @@ public class MainMenu : MonoBehaviour
         deathEffectFeature.SetActive(false);
         LoadSceneAsync("GameScene");
     }
-    public void PlayGame()
+    public void PlayGame(int tutorial)
     {
+        
+        TutorialBootstrap.value = tutorial;
         if (asyncLoad != null && asyncLoad.isDone)
         {
             asyncLoad.allowSceneActivation = true;

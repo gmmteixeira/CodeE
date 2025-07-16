@@ -28,18 +28,11 @@ public class FPSCam : MonoBehaviour
     private void OnEnable()
     {
         WeaponEvents.OnWeaponAltFired += laserFired;
-        PlayerEvents.OnPlayerDeath += OnPlayerDeath;
-    }
-
-    private void OnPlayerDeath()
-    {
-        GetComponent<AudioListener>().enabled = false;
     }
 
     private void OnDisable()
     {
         WeaponEvents.OnWeaponAltFired -= laserFired;
-        PlayerEvents.OnPlayerDeath -= OnPlayerDeath;
     }
     private void laserFired()
     {

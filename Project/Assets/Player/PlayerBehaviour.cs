@@ -124,7 +124,9 @@ public class PlayerBehaviour : MonoBehaviour
                 {
                     if (game.tutorial == 9)
                     {
-                        game.tutorial = 0;
+                        Debug.Log("Disabling tutorial");
+                        TutorialBootstrap.value = 0;
+                        Debug.Log(TutorialBootstrap.value);
                     }
                     entityManager.CreateEntityQuery(typeof(GameComponentData)).SetSingleton(game);
                     Scene currentScene = SceneManager.GetActiveScene();

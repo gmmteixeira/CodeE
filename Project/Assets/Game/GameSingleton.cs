@@ -9,10 +9,11 @@ public class GameSingleton : MonoBehaviour
         public override void Bake(GameSingleton authoring)
         {
             var entity = GetEntity(TransformUsageFlags.Dynamic);
+            Debug.Log(TutorialBootstrap.value);
             AddComponent(entity, new GameComponentData
             {
                 score = 0,
-                tutorial = 8,
+                tutorial = -1,
                 tutorialTimer = 1
             });
         }
@@ -35,4 +36,9 @@ public struct GameComponentData : IComponentData
     9 = death
     */
     public float tutorialTimer;
+}
+
+public static class TutorialBootstrap
+{
+    public static int value = 0;
 }

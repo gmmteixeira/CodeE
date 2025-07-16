@@ -136,7 +136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &19664204
 RectTransform:
   m_ObjectHideFlags: 0
@@ -264,6 +264,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 128495132}
+  - component: {fileID: 128495133}
   m_Layer: 0
   m_Name: Listener
   m_TagString: Untagged
@@ -286,6 +287,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 330585546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &128495133
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128495131}
+  m_Enabled: 1
 --- !u!1 &199189335
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,7 +651,6 @@ GameObject:
   m_Component:
   - component: {fileID: 330585546}
   - component: {fileID: 330585545}
-  - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
   m_Layer: 0
@@ -652,14 +660,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &330585544
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
 --- !u!20 &330585545
 Camera:
   m_ObjectHideFlags: 0
@@ -2176,6 +2176,7 @@ MonoBehaviour:
   powerupImageMask: {fileID: 327418849}
   powerupImageBG: {fileID: 432308136}
   hand: {fileID: 1575163600}
+  listener: {fileID: 128495131}
 --- !u!114 &1607137709
 MonoBehaviour:
   m_ObjectHideFlags: 0
